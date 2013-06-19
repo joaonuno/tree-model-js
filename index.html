@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>TreeModel</title>
+    <meta name="description" content="Manipulate and traverse tree-like structures in javascript.">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="vendor/normalize/normalize.css">
+    <link rel="stylesheet" href="vendor/codemirror/codemirror.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="left">
+        <h1>TreeModel</h1>
+        <h2 style="color: red;">This page is a work in progress.</h2>
+        <p>Manipulate and traverse tree-like structures in javascript.</p>
+        <h2 name="parse">Create a new TreeModel</h2>
+        <div class="code" name="parse">tree = new TreeModel();
+root = tree.parse({
+    id: 1,
+    children: [
+        {
+            id: 11,
+            children: [{id: 111}]
+        },
+        {
+            id: 12,
+            children: [{id: 121}, {id: 122}]
+        },
+        {
+            id: 13
+        }
+    ]
+});</div>
+        <svg name="parse" width="250" height="400"></svg>
+    </div>
+    
+    <div class="right">
+        <h2 name="first">Find the first node that matches a predicate</h2>
+        <div class="code" name="first">var node12 = root.first(function (node) {
+    return node.model.id === 12;
+});</div>
+        <button name="first">»</button>
+        <hr />
+        <h2 name="all">Find all nodes that match a predicate</h2>
+        <div class="code" name="all">var nodesGt100 = root.all(function (node) {
+    return node.model.id > 100;
+});</div>
+        <button name="all">»</button>
+        <hr />
+    </div>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="vendor/codemirror/codemirror.js"></script>
+    <script src="vendor/codemirror/javascript.js"></script>
+    <script src="src/TreeModel.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

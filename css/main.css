@@ -1,0 +1,42 @@
+body, .CodeMirror {
+	background-color: #f8f9f8;
+}
+
+.code {
+    margin: 10px 0;
+}
+
+.inline {
+    display: inline-block;
+    margin: 0;
+}
+
+.CodeMirror {
+    height: auto!important;   
+}
+
+.left {
+	position: fixed;
+	width: 400px;
+	left: 10px;
+	top: 0px;
+}
+
+.right {
+	position: relative;
+	width:	500px;
+	border-left: 3px solid #f1f1f1;
+	padding-left: 10px;
+	margin-left: 450px;
+}
+
+button {
+	border: 1px solid darkgreen;
+	background-color: rgb(138, 224, 138);
+	border-radius: 15px;
+	color: darkgreen;
+}
+
+button:hover {
+	background-color: rgb(38, 255, 38);
+}
