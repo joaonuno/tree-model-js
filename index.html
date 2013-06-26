@@ -7,17 +7,23 @@
     <meta name="description" content="Manipulate and traverse tree-like structures in javascript.">
     <meta name="viewport" content="width=device-width">
 
-    <link rel="stylesheet" href="vendor/normalize/normalize.css">
+    <!--link rel="stylesheet" href="vendor/normalize/normalize.css"-->
     <link rel="stylesheet" href="vendor/codemirror/codemirror.css">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <div class="left">
-        <h1>TreeModel</h1>
-        <h2 style="color: red;">This page is a work in progress.</h2>
-        <p>Manipulate and traverse tree-like structures in javascript.</p>
-        <h2 name="parse">Create a new TreeModel</h2>
-        <div class="code" name="parse">tree = new TreeModel();
+    <div class="container">
+        <div class="row">
+            <div class="span6">
+                <h1>TreeModel</h1>
+                <p>Manipulate and traverse tree-like structures in javascript.</p>
+                
+                <h5 name="parse">Create a new TreeModel</h5>
+                <div class="code" name="parse">// hint: TreeModel, tree and root are
+// globally available on this page
+tree = new TreeModel();
+
 root = tree.parse({
     id: 1,
     children: [
@@ -34,25 +40,32 @@ root = tree.parse({
         }
     ]
 });</div>
-        <svg name="parse" width="250" height="400"></svg>
-    </div>
-    
-    <div class="right">
-        <h2 name="first">Find the first node that matches a predicate</h2>
-        <div class="code" name="first">var node12 = root.first(function (node) {
+                <div id="svg"></div>
+            </div>
+            <div class="span6">
+                <h5>Find the first node that matches a predicate</h5>
+                <div class="code" data-fn="first">var node12 = root.first(function (node) {
     return node.model.id === 12;
 });</div>
-        <button name="first">»</button>
-        <hr />
-        <h2 name="all">Find all nodes that match a predicate</h2>
-        <div class="code" name="all">var nodesGt100 = root.all(function (node) {
+                <hr />
+                <h5>Find all nodes that match a predicate</h5>
+                <div class="code" data-fn="all">var nodesGt100 = root.all(function (node) {
     return node.model.id > 100;
 });</div>
-        <button name="all">»</button>
-        <hr />
+                <hr />
+                <h5>Traverse the tree</h5>
+                <div class="code" data-fn="walk">root.walk(function (node) {
+    // Halt the traversal by returning false
+    if (node.model.id === 121) return false;
+});</div>
+                <hr />
+            </div>
+        </div>
     </div>
+    <a href="https://github.com/joaonuno/tree-model-js"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="vendor/codemirror/codemirror.js"></script>
     <script src="vendor/codemirror/javascript.js"></script>
