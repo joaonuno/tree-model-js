@@ -1,5 +1,14 @@
-body, .CodeMirror {
-	background-color: #f8f9f8;
+body {
+    background-color: #f6f6f6;
+}
+
+.container, .CodeMirror {
+    background-color: #f8f9f8;
+}
+
+.container {
+    padding: 15px;
+    box-shadow: 0px 0px 5px 2px #eee;
 }
 
 .code {
@@ -13,5 +22,9 @@ body, .CodeMirror {
 }
 
 .CodeMirror {
-    height: auto!important;   
+    height: auto!important;
+}
+
+svg {
+    border: 1px dashed #eee;
 }

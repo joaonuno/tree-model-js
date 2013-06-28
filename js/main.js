@@ -3,7 +3,15 @@ var tree, root;
 $(function () {
   'use strict';
 
-  var COLOR_MATCH, COLOR_NO_MATCH, COLOR_VISITED, COLOR_NODE_STROKE, COLOR_TEXT_STROKE, COLOR_NODE_FILL, ui, svg;
+  var COLOR_MATCH,
+    COLOR_NO_MATCH,
+    COLOR_VISITED,
+    COLOR_NODE_STROKE,
+    COLOR_TEXT_STROKE,
+    COLOR_NODE_FILL,
+    COLOR_DROP_FILL,
+    ui,
+    svg;
 
   COLOR_MATCH = '#B7FFCD';
   COLOR_NO_MATCH = '#FFC1B7';
@@ -11,6 +19,7 @@ $(function () {
   COLOR_NODE_STROKE = '#141414';
   COLOR_TEXT_STROKE = '#141414';
   COLOR_NODE_FILL = '#F1F1F1';
+  COLOR_DROP_FILL = '#FFC1B7';
 
   // Add play buttons
   $('[data-fn]').each(function (i, el) {
@@ -63,10 +72,11 @@ $(function () {
   // Graphical functions
   ui = {
     reset: function () {
+      resetRoot();
       if (svg) {
         svg.remove();
       }
-      $('#svg').append('<svg width="250" height="400"></svg>');
+      $('#svg').append('<svg width="400" height="400"></svg>');
       svg = d3.select('svg');
       ui.parse.fn();
     },
@@ -165,6 +175,41 @@ $(function () {
         });
         ui.animate();
       }
+    },
+    drop: {
+      fn: function () {
+        var node12, node13, vGap;
+        ui.reset();
+        ui.cancelAnimations();
+        node12 = root.first(idIn([12])).drop();
+        vGap = parseInt(node12.ui.circle.attr('cy'), 10) - parseInt(root.ui.circle.attr('cy'), 10);
+
+        node12.walk(function (node) {
+          node.ui.circle.transition().delay(0).duration(1000).attr({
+            fill: COLOR_DROP_FILL
+          });
+          node.ui.circle.transition().delay(1000).duration(500).attr({
+            cx: parseInt(node.ui.circle.attr('cx'), 10) + 100
+          });
+          node.ui.label.transition().delay(1000).duration(500).attr({
+            x: parseInt(node.ui.label.attr('x'), 10) + 100
+          });
+          node.ui.circle.transition().delay(1500).duration(500).attr({
+            cy: parseInt(node.ui.circle.attr('cy'), 10) - vGap
+          });
+          node.ui.label.transition().delay(1500).duration(500).attr({
+            y: parseInt(node.ui.label.attr('y'), 10) - vGap
+          });
+        });
+
+        node13 = root.first(idIn([13]))
+        node13.ui.circle.transition().delay(1500).duration(500).attr({
+          cy: parseInt(node12.ui.circle.attr('cy'), 10)
+        });
+        node13.ui.label.transition().delay(1500).duration(500).attr({
+          y: parseInt(node12.ui.label.attr('y'), 10)
+        });
+      }
     }
   };
 
@@ -180,11 +225,33 @@ $(function () {
       readOnly: true
     });
     if (!$el.is('[data-fn]')) {
-      eval(code);
+      //eval(code);
     } else {
       ui[$el.data('fn')].cm = cm;
     }
   });
+
+  function resetRoot() {
+    tree = new TreeModel();
+    root = tree.parse({
+      id: 1,
+      children: [
+          {
+              id: 11,
+              children: [{id: 111}]
+          },
+          {
+              id: 12,
+              children: [{id: 121}, {id: 122}]
+          },
+          {
+              id: 13
+          }
+      ]
+    });
+  }
+
+  resetRoot();
 
   ui.reset();
 });
