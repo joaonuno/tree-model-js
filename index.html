@@ -63,6 +63,11 @@ root = tree.parse({
                 <div class="code" data-fn="drop">// Dropping a node returns the node itself
 node12.drop();</div>
                 <hr />
+                <h5>Add a node</h5>
+                <div class="code" data-fn="addChild">// Parse the new node
+node123 = tree.parse({id: 123, children: [{id: 1231}]});
+// Add it to the parent
+node12.addChild(node123);</div>
             </div>
         </div>
     </div>
@@ -75,5 +80,14 @@ node12.drop();</div>
     <script src="vendor/codemirror/javascript.js"></script>
     <script src="src/TreeModel.js"></script>
     <script src="js/main.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-42129779-1', 'jnuno.com');
+      ga('send', 'pageview');
+    </script>
 </body>
 </html>

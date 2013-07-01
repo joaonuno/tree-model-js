@@ -78,7 +78,7 @@ $(function () {
       }
       $('#svg').append('<svg width="400" height="400"></svg>');
       svg = d3.select('svg');
-      ui.parse.fn();
+      ui.parse.fn(root, 75, 5);
     },
     markVisited: markNode.bind(this, 'visited'),
     markNoMatch: markNode.bind(this, 'noMatch'),
@@ -97,20 +97,20 @@ $(function () {
       ui.animations.length = 0;
     },
     parse: {
-      fn: function () {
+      fn: function (nodeToDraw, x, y, fillColor) {
         var RADIUS, INC_X, INC_Y, cx, cy;
         RADIUS = 18;
         INC_X = RADIUS*2 + 5;
         INC_Y = RADIUS*2 + 5;
-        cx = RADIUS + 75;
-        cy = RADIUS + 5;
+        cx = RADIUS + x;
+        cy = RADIUS + y;
 
-        root.walk(function (node) {
+        nodeToDraw.walk(function (node) {
           node.ui = {
             circle: svg.append('circle').attr({
               r: RADIUS,
               stroke: COLOR_NODE_STROKE,
-              fill: COLOR_NODE_FILL
+              fill: fillColor || COLOR_NODE_FILL
             }),
             label: svg.append('text').text(node.model.id).attr({
               stroke: COLOR_TEXT_STROKE,
@@ -184,31 +184,77 @@ $(function () {
         node12 = root.first(idIn([12])).drop();
         vGap = parseInt(node12.ui.circle.attr('cy'), 10) - parseInt(root.ui.circle.attr('cy'), 10);
 
-        node12.walk(function (node) {
-          node.ui.circle.transition().delay(0).duration(1000).attr({
-            fill: COLOR_DROP_FILL
+        ui.animations.push(function () {
+          node12.walk(function (node) {
+            node.ui.circle.transition().delay(0).duration(1000).attr({
+              fill: COLOR_DROP_FILL
+            });
+            node.ui.circle.transition().delay(1000).duration(500).attr({
+              cx: parseInt(node.ui.circle.attr('cx'), 10) + 100
+            });
+            node.ui.label.transition().delay(1000).duration(500).attr({
+              x: parseInt(node.ui.label.attr('x'), 10) + 100
+            });
+            node.ui.circle.transition().delay(1500).duration(500).attr({
+              cy: parseInt(node.ui.circle.attr('cy'), 10) - vGap
+            });
+            node.ui.label.transition().delay(1500).duration(500).attr({
+              y: parseInt(node.ui.label.attr('y'), 10) - vGap
+            });
           });
-          node.ui.circle.transition().delay(1000).duration(500).attr({
-            cx: parseInt(node.ui.circle.attr('cx'), 10) + 100
-          });
-          node.ui.label.transition().delay(1000).duration(500).attr({
-            x: parseInt(node.ui.label.attr('x'), 10) + 100
-          });
-          node.ui.circle.transition().delay(1500).duration(500).attr({
-            cy: parseInt(node.ui.circle.attr('cy'), 10) - vGap
-          });
-          node.ui.label.transition().delay(1500).duration(500).attr({
-            y: parseInt(node.ui.label.attr('y'), 10) - vGap
-          });
-        });
 
-        node13 = root.first(idIn([13]))
-        node13.ui.circle.transition().delay(1500).duration(500).attr({
-          cy: parseInt(node12.ui.circle.attr('cy'), 10)
+          node13 = root.first(idIn([13]));
+          node13.ui.circle.transition().delay(1500).duration(500).attr({
+            cy: parseInt(node12.ui.circle.attr('cy'), 10)
+          });
+          node13.ui.label.transition().delay(1500).duration(500).attr({
+            y: parseInt(node12.ui.label.attr('y'), 10)
+          });
         });
-        node13.ui.label.transition().delay(1500).duration(500).attr({
-          y: parseInt(node12.ui.label.attr('y'), 10)
+        ui.animate();
+      }
+    },
+    addChild: {
+      fn: function () {
+        var node123, node1231, node13, node122, hDiff, goDown, goLeft;
+        ui.reset();
+        ui.cancelAnimations();
+        node123 = tree.parse({id: 123, children: [{id: 1231}]});
+        node13 = root.first(idIn([13]));
+        node122 = root.first(idIn([122]));
+        ui.animations.push(function () {
+          ui.parse.fn(node123, 210, 5, '#FAE37A');
+          root.first(idIn([12])).addChild(node123);
+          node1231 = root.first(idIn([1231]));
+
+          hDiff = parseInt(node1231.ui.circle.attr('cy'), 10) - parseInt(node123.ui.circle.attr('cy'), 10);
+          goDown = parseInt(node13.ui.circle.attr('cy'), 10) - parseInt(node123.ui.circle.attr('cy'), 10);
+          goLeft = parseInt(node123.ui.circle.attr('cx'), 10) - parseInt(node122.ui.circle.attr('cx'), 10);
+
+          node123.walk(function (node) {
+            node.ui.circle.transition().delay(500).duration(500).attr({
+              cy: parseInt(node.ui.circle.attr('cy'), 10) + goDown
+            });
+            node.ui.label.transition().delay(500).duration(500).attr({
+              y: parseInt(node.ui.label.attr('y'), 10) + goDown
+            });
+
+            node.ui.circle.transition().delay(1000).duration(300).attr({
+              cx: parseInt(node.ui.circle.attr('cx'), 10) - goLeft
+            });
+            node.ui.label.transition().delay(1000).duration(300).attr({
+              x: parseInt(node.ui.label.attr('x'), 10) - goLeft
+            });
+
+            node13.ui.circle.transition().delay(1000).duration(300).attr({
+              cy: parseInt(node13.ui.circle.attr('cy'), 10) + hDiff * 2
+            });
+            node13.ui.label.transition().delay(1000).duration(300).attr({
+              y: parseInt(node13.ui.label.attr('y'), 10) + hDiff * 2
+            });
+          });
         });
+        ui.animate();
       }
     }
   };
