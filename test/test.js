@@ -200,7 +200,7 @@ describe('TreeModel', function () {
 
       describe('walk depthFirstPostOrder', function () {
         it('should traverse the nodes until the callback returns false', function () {
-          root.walk({strategy: 'depthFirstPostOrder'}, spy121, this);
+          root.walk({strategy: 'post'}, spy121, this);
           assert.strictEqual(spy121.callCount, 3);
           assert(spy121.alwaysCalledOn(this));
           assert(spy121.getCall(0).calledWithExactly(root.first(idEq(111))));
@@ -211,7 +211,7 @@ describe('TreeModel', function () {
 
       describe('walk depthFirstPostOrder (2)', function () {
         it('should traverse the nodes until the callback returns false', function () {
-          root.walk({strategy: 'depthFirstPostOrder'}, spy12, this);
+          root.walk({strategy: 'post'}, spy12, this);
           assert.strictEqual(spy12.callCount, 5);
           assert(spy12.alwaysCalledOn(this));
           assert(spy12.getCall(0).calledWithExactly(root.first(idEq(111))));
@@ -224,7 +224,7 @@ describe('TreeModel', function () {
 
       describe('walk breadthFirst', function () {
         it('should traverse the nodes until the callback returns false', function () {
-          root.walk({strategy: 'breadthFirst'}, spy121, this);
+          root.walk({strategy: 'breadth'}, spy121, this);
           assert.strictEqual(spy121.callCount, 5);
           assert(spy121.alwaysCalledOn(this));
           assert(spy121.getCall(0).calledWithExactly(root.first(idEq(1))));
@@ -240,7 +240,7 @@ describe('TreeModel', function () {
           assert.throws(
             root.walk.bind(root, {strategy: 'unknownStrategy'}, callback121, this),
             Error,
-            'Unknown tree walk strategy.');
+            'Unknown tree walk strategy. Valid strategies are \'pre\' [default], \'post\' and \'breadth\'.');
         });
       });
     });
