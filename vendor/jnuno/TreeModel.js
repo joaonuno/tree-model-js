@@ -1,5 +1,5 @@
-// TreeModel.js v0.0.1
-// (c) 2013 Joao Nuno Silva
+// TreeModel.js v0.1.0
+// (c) 2013 João Nuno Silva
 // TreeModel may be freely distributed under the MIT license.
 
 (function () {
@@ -106,10 +106,10 @@
     }
     args.options = args.options || {};
     if (!args.options.strategy) {
-      args.options.strategy = 'depthFirstPreOrder';
+      args.options.strategy = 'pre';
     }
     if (!walkStrategies[args.options.strategy]) {
-      throw new Error('Unknown tree walk strategy.');
+      throw new Error('Unknown tree walk strategy. Valid strategies are \'pre\' [default], \'post\' and \'breadth\'.');
     }
     return args;
   }
@@ -120,7 +120,7 @@
     walkStrategies[args.options.strategy].call(this, args.fn, args.ctx);
   };
 
-  walkStrategies.depthFirstPreOrder = function depthFirstPreOrder(callback, context) {
+  walkStrategies.pre = function depthFirstPreOrder(callback, context) {
     var i, childCount, keepGoing;
     keepGoing = callback.call(context, this);
     for (i = 0, childCount = this.children.length; i < childCount; i++) {
@@ -132,7 +132,7 @@
     return keepGoing;
   };
 
-  walkStrategies.depthFirstPostOrder = function depthFirstPostOrder(callback, context) {
+  walkStrategies.post = function depthFirstPostOrder(callback, context) {
     var i, childCount, keepGoing;
     for (i = 0, childCount = this.children.length; i < childCount; i++) {
       keepGoing = depthFirstPostOrder.call(this.children[i], callback, context);
@@ -144,7 +144,7 @@
     return keepGoing;
   };
 
-  walkStrategies.breadthFirst = function breadthFirst(callback, context) {
+  walkStrategies.breadth = function breadthFirst(callback, context) {
     var queue = [this];
     (function processQueue() {
       var i, childCount, node;
