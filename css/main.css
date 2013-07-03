@@ -25,6 +25,6 @@ body {
     height: auto!important;
 }
 
-svg {
-    border: 1px dashed #eee;
+[data-play] {
+    margin-right: 25px;
 }

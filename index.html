@@ -15,7 +15,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="span6">
+            <div class="span5">
                 <h1>TreeModel</h1>
                 <p>Manipulate and traverse tree-like structures in javascript.</p>
                 <a href="https://raw.github.com/joaonuno/tree-model-js/master/src/TreeModel.js" download="TreeModel.js">Download TreeModel.js</a>
@@ -42,19 +42,19 @@ root = tree.parse({
 });</div>
                 <div id="svg"></div>
             </div>
-            <div class="span6">
+            <div class="span7">
                 <h5>Find the first node that matches a predicate</h5>
-                <div class="code" data-fn="first">var node12 = root.first(function (node) {
+                <div class="code" data-fn="first" data-walk>var node12 = root.first(function (node) {
     return node.model.id === 12;
 });</div>
                 <hr />
                 <h5>Find all nodes that match a predicate</h5>
-                <div class="code" data-fn="all">var nodesGt100 = root.all(function (node) {
+                <div class="code" data-fn="all" data-walk>var nodesGt100 = root.all(function (node) {
     return node.model.id > 100;
 });</div>
                 <hr />
                 <h5>Traverse the tree</h5>
-                <div class="code" data-fn="walk">root.walk(function (node) {
+                <div class="code" data-fn="walk" data-walk>root.walk(function (node) {
     // Halt the traversal by returning false
     if (node.model.id === 121) return false;
 });</div>
@@ -68,6 +68,10 @@ node12.drop();</div>
 node123 = tree.parse({id: 123, children: [{id: 1231}]});
 // Add it to the parent
 node12.addChild(node123);</div>
+<hr />
+                <h5>Get a node's path</h5>
+                <div class="code" data-fn="getPath">node122.getPath();
+// [&lt;node 1&gt;, &lt;node 12&gt;, &lt;node 122&gt;]</div>
             </div>
         </div>
     </div>

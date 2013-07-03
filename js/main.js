@@ -15,7 +15,7 @@ $(function () {
 
   COLOR_MATCH = '#B7FFCD';
   COLOR_NO_MATCH = '#FFC1B7';
-  COLOR_VISITED = '#B4B4B4';
+  COLOR_VISITED = '#99B7F7';
   COLOR_NODE_STROKE = '#141414';
   COLOR_TEXT_STROKE = '#141414';
   COLOR_NODE_FILL = '#F1F1F1';
@@ -25,14 +25,32 @@ $(function () {
   $('[data-fn]').each(function (i, el) {
     $(el)
       .after('<button data-play="' + $(el).data('fn') + '" class="btn btn-mini btn-primary" type="button">play</button>')
-      /*.after('<div>' +
-          '<label><input type="radio" value="depthFirstPreOrder" name="strategy"><span>depth-first pre-order</span></label>' +
-          '<label><input type="radio" value="depthFirstPostOrder" name="strategy"><span>depth-first post-order</span></label>' +
-          '<label><input type="radio" value="breadthFirst" name="strategy"><span>breadth-first</span></label>' +
-        '</div>')*/;
+      .filter('[data-walk]')
+      .next('button')
+      .after('<div class="btn-group" data-toggle="buttons-radio">' +
+          '<button type="button" class="btn btn-mini active" data-strategy="pre">pre</button>' +
+          '<button type="button" class="btn btn-mini" data-strategy="post">post</button>' +
+          '<button type="button" class="btn btn-mini" data-strategy="breadth">breadth</button>' +
+        '</div>');
   });
   $('body').on('click', '[data-play]', function (ev) {
-    ui[$(ev.currentTarget).data('play')].fn();
+    var currentTarget, walkOptions;
+    currentTarget = $(ev.currentTarget);
+    walkOptions = {};
+    if (currentTarget.prev('[data-fn]').is('[data-walk]')) {
+      walkOptions.strategy = currentTarget.next('.btn-group').find('.active').data('strategy');
+    }
+    ui[currentTarget.data('play')].fn(walkOptions);
+  });
+  $('body').on('click', '[data-strategy]', function (ev) {
+    var currentTarget, section, strategy;
+    currentTarget = $(ev.currentTarget);
+    section = currentTarget.parent().prev('[data-play]').data('play');
+    strategy = '{strategy: \'' + currentTarget.data('strategy') + '\'}, ';
+    if (currentTarget.data('strategy') === 'pre') {
+      strategy = '';
+    }
+    ui[section].cm.setValue(ui[section].cm.getValue().replace(/\(.*function/, '('+ strategy +'function'));
   });
 
   // Helper function to check if a node id matches any of the given ids
@@ -51,14 +69,13 @@ $(function () {
   function markNode(mark , node, i) {
     ui.animations.push(function () {
       node.ui.circle.transition().delay(0).duration(150).attr({
-        // fill: match ? '#58ED62' : '#F7F09E',
         fill: getColorByMark(mark),
         r: '20'
       });
       node.ui.circle.transition().delay(150).duration(250).attr({
         r: '18'
       });
-      svg.append('text').text(i).transition().delay(250).attr({
+      svg.append('text').text(i).attr({
         stroke: COLOR_TEXT_STROKE,
         'font-family': 'Verdana',
         'font-size': '10px',
@@ -132,11 +149,11 @@ $(function () {
       }
     },
     first: {
-      fn: function () {
+      fn: function (walkOptions) {
         var i = 1;
         ui.reset();
         ui.cancelAnimations();
-        root.first(function (node) {
+        root.first(walkOptions, function (node) {
           if (node.model.id === 12) {
             ui.markMatch(node, i++);
             return true;
@@ -148,11 +165,11 @@ $(function () {
       }
     },
     all: {
-      fn: function () {
+      fn: function (walkOptions) {
         var i = 1;
         ui.reset();
         ui.cancelAnimations();
-        root.walk(function (node) {
+        root.walk(walkOptions, function (node) {
           if (node.model.id > 100) {
             ui.markMatch(node, i++);
           } else {
@@ -163,11 +180,11 @@ $(function () {
       }
     },
     walk: {
-      fn: function () {
+      fn: function (walkOptions) {
         var i = 1;
         ui.reset();
         ui.cancelAnimations();
-        root.walk(function (node) {
+        root.walk(walkOptions, function (node) {
           ui.markVisited(node, i++);
           if (node.model.id === 121) {
             return false;
@@ -189,25 +206,25 @@ $(function () {
             node.ui.circle.transition().delay(0).duration(1000).attr({
               fill: COLOR_DROP_FILL
             });
-            node.ui.circle.transition().delay(1000).duration(500).attr({
+            node.ui.circle.transition().delay(1000).duration(300).attr({
               cx: parseInt(node.ui.circle.attr('cx'), 10) + 100
             });
-            node.ui.label.transition().delay(1000).duration(500).attr({
+            node.ui.label.transition().delay(1000).duration(300).attr({
               x: parseInt(node.ui.label.attr('x'), 10) + 100
             });
-            node.ui.circle.transition().delay(1500).duration(500).attr({
+            node.ui.circle.transition().delay(1300).duration(500).attr({
               cy: parseInt(node.ui.circle.attr('cy'), 10) - vGap
             });
-            node.ui.label.transition().delay(1500).duration(500).attr({
+            node.ui.label.transition().delay(1300).duration(500).attr({
               y: parseInt(node.ui.label.attr('y'), 10) - vGap
             });
           });
 
           node13 = root.first(idIn([13]));
-          node13.ui.circle.transition().delay(1500).duration(500).attr({
+          node13.ui.circle.transition().delay(1300).duration(500).attr({
             cy: parseInt(node12.ui.circle.attr('cy'), 10)
           });
-          node13.ui.label.transition().delay(1500).duration(500).attr({
+          node13.ui.label.transition().delay(1300).duration(500).attr({
             y: parseInt(node12.ui.label.attr('y'), 10)
           });
         });
@@ -223,7 +240,7 @@ $(function () {
         node13 = root.first(idIn([13]));
         node122 = root.first(idIn([122]));
         ui.animations.push(function () {
-          ui.parse.fn(node123, 210, 5, '#FAE37A');
+          ui.parse.fn(node123, 210, 5, COLOR_MATCH);
           root.first(idIn([12])).addChild(node123);
           node1231 = root.first(idIn([1231]));
 
@@ -256,7 +273,27 @@ $(function () {
         });
         ui.animate();
       }
-    }
+    },
+    getPath: {
+      fn: function () {
+        var i = 1, node122Path;
+        ui.reset();
+        ui.cancelAnimations();
+        node122Path = root.first(idIn([122])).getPath();
+        ui.animations.push(function () {
+          node122Path.map(function (node) {
+            node.ui.circle.transition().delay(0).duration(150).attr({
+              fill: COLOR_VISITED,
+              r: '20'
+            });
+            node.ui.circle.transition().delay(150).duration(250).attr({
+              r: '18'
+            });
+          });
+        });
+        ui.animate();
+      }
+    },
   };
 
   $('.code').each(function (i, el) {
