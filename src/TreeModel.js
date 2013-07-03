@@ -1,5 +1,5 @@
-// TreeModel.js v0.0.1
-// (c) 2013 Joao Nuno Silva
+// TreeModel.js v0.1.0
+// (c) 2013 João Nuno Silva
 // TreeModel may be freely distributed under the MIT license.
 
 (function () {
