@@ -1,1 +1,1 @@
-uglifyjs src/TreeModel.js -o TreeModel.min.js -m -r TreeModel
+uglifyjs src/TreeModel.js -o TreeModel.js -m -r TreeModel
