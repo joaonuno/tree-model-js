@@ -198,11 +198,11 @@
 
   if (typeof exports === 'object') {
     module.exports = TreeModel;
-  }
-  else if (typeof define === 'function' && define.amd) {
-    define(TreeModel);
-  }
-  else {
+  } else if (typeof define === 'function' && define.amd) {
+    define(function () {
+      return TreeModel;
+    });
+  } else {
     this.TreeModel = TreeModel;
   }
 }).call(this);
