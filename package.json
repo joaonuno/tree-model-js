@@ -1,6 +1,6 @@
 {
   "name": "tree-model",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "description": "Manipulate and traverse tree-like structures in javascript.",
   "keywords": ["tree", "hierarchy", "browser", "node", "requirejs"],
   "homepage": "http://jnuno.com/tree-model-js",
