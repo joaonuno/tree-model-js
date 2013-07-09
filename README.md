@@ -66,3 +66,5 @@ Valid options are:
 * `{strategy: 'post'}` - Depth-first post-order;
 * `{strategy: 'breadth'}` - Breadth-first.
 
+<br />
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/joaonuno/tree-model-js/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
