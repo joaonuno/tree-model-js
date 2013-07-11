@@ -1,1 +1,208 @@
-!function(){"use strict";var t;t={};function TreeModel(t){t=t||{};this.config=t;this.config.childrenPropertyName=t.childrenPropertyName||"children";this.config.modelComparatorFn=t.modelComparatorFn||function(){return 0}}TreeModel.prototype.parse=function(t){var r,i,o;if(!(t instanceof Object)){throw new TypeError("Model must be of type object.")}o=new n(this.config,t);if(t[this.config.childrenPropertyName]instanceof Array){t[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);for(r=0,i=t[this.config.childrenPropertyName].length;r<i;r++){e(o,this.parse(t[this.config.childrenPropertyName][r]))}}return o};function e(t,e){e.parent=t;t.children.push(e);return e}function n(t,e){this.config=t;this.model=e;this.children=[]}n.prototype.isRoot=function(){return this.parent===undefined};n.prototype.addChild=function(t){var e;t.parent=this;if(!(this.model[this.config.childrenPropertyName]instanceof Array)){this.model[this.config.childrenPropertyName]=[]}this.model[this.config.childrenPropertyName].push(t.model);this.model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);e=this.model[this.config.childrenPropertyName].lastIndexOf(t);this.children.splice(e,0,t);return t};n.prototype.getPath=function(){var t=[];!function e(n){t.unshift(n);if(!n.isRoot()){e(n.parent)}}(this);return t};function r(){var e={};if(arguments.length===1){e.fn=arguments[0]}else if(arguments.length===2){if(typeof arguments[0]==="function"){e.fn=arguments[0];e.ctx=arguments[1]}else{e.options=arguments[0];e.fn=arguments[1]}}else{e.options=arguments[0];e.fn=arguments[1];e.ctx=arguments[2]}e.options=e.options||{};if(!e.options.strategy){e.options.strategy="pre"}if(!t[e.options.strategy]){throw new Error("Unknown tree walk strategy. Valid strategies are 'pre' [default], 'post' and 'breadth'.")}return e}n.prototype.walk=function(){var e;e=r.apply(this,arguments);t[e.options.strategy].call(this,e.fn,e.ctx)};t.pre=function i(t,e){var n,r,o;o=t.call(e,this);for(n=0,r=this.children.length;n<r;n++){if(o===false){return false}o=i.call(this.children[n],t,e)}return o};t.post=function o(t,e){var n,r,i;for(n=0,r=this.children.length;n<r;n++){i=o.call(this.children[n],t,e);if(i===false){return false}}i=t.call(e,this);return i};t.breadth=function s(t,e){var n=[this];!function r(){var i,o,s;if(n.length===0){return}s=n.shift();for(i=0,o=s.children.length;i<o;i++){n.push(s.children[i])}if(t.call(e,s)!==false){r()}}()};n.prototype.all=function(){var e,n=[];e=r.apply(this,arguments);t[e.options.strategy].call(this,function(t){if(e.fn.call(e.ctx,t)){n.push(t)}},e.ctx);return n};n.prototype.first=function(){var e,n;e=r.apply(this,arguments);t[e.options.strategy].call(this,function(t){if(e.fn.call(e.ctx,t)){n=t;return false}},e.ctx);return n};n.prototype.drop=function(){var t;if(!this.isRoot()){t=this.parent.children.indexOf(this);this.parent.children.splice(t,1);this.parent.model.children.splice(t,1);this.parent=undefined;delete this.parent}return this};if(typeof exports==="object"){module.exports=TreeModel}else if(typeof define==="function"&&define.amd){define(function(){return TreeModel})}else{this.TreeModel=TreeModel}}.call(this);
+// TreeModel.js v0.2.2
+// (c) 2013 João Nuno Silva
+// TreeModel may be freely distributed under the MIT license.
+
+(function () {
+  /* global define */
+  'use strict';
+
+  var walkStrategies;
+
+  walkStrategies = {};
+
+  function TreeModel(config) {
+    config = config || {};
+    this.config = config;
+    this.config.childrenPropertyName = config.childrenPropertyName || 'children';
+    this.config.modelComparatorFn = config.modelComparatorFn || function () {
+      return 0;
+    };
+  }
+
+  TreeModel.prototype.parse = function (model) {
+    var i, childCount, node;
+
+    if (!(model instanceof Object)) {
+      throw new TypeError('Model must be of type object.');
+    }
+
+    node = new Node(this.config, model);
+    if (model[this.config.childrenPropertyName] instanceof Array) {
+      model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
+      for (i = 0, childCount = model[this.config.childrenPropertyName].length; i < childCount; i++) {
+        _addChildToNode(node, this.parse(model[this.config.childrenPropertyName][i]));
+      }
+    }
+    return node;
+  };
+
+  function _addChildToNode(node, child) {
+    child.parent = node;
+    node.children.push(child);
+    return child;
+  }
+
+  function Node(config, model) {
+    this.config = config;
+    this.model = model;
+    this.children = [];
+  }
+
+  Node.prototype.isRoot = function () {
+    return this.parent === undefined;
+  };
+
+  Node.prototype.addChild = function (child) {
+    var index;
+    child.parent = this;
+    if (!(this.model[this.config.childrenPropertyName] instanceof Array)) {
+      this.model[this.config.childrenPropertyName] = [];
+    }
+    this.model[this.config.childrenPropertyName].push(child.model);
+    // TODO Refactor this to avoid using sort
+    this.model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
+    index = this.model[this.config.childrenPropertyName].lastIndexOf(child);
+    this.children.splice(index, 0, child);
+    return child;
+  };
+
+  Node.prototype.getPath = function () {
+    var path = [];
+    (function addToPath(node) {
+      path.unshift(node);
+      if (!node.isRoot()) {
+        addToPath(node.parent);
+      }
+    })(this);
+    return path;
+  };
+
+  /**
+   * Parse the arguments of traversal functions. These functions can take one optional
+   * first argument which is an options object. If present, this object will be stored
+   * in args.options. The only mandatory argument is the callback function which can
+   * appear in the first or second position (if an options object is given). This
+   * function will be saved to args.fn. The last optional argument is the context on
+   * which the callback function will be called. It will be available in args.ctx.
+   *
+   * @return Parsed arguments.
+   */
+  function parseArgs() {
+    var args = {};
+    if (arguments.length === 1) {
+      args.fn = arguments[0];
+    } else if (arguments.length === 2) {
+      if (typeof arguments[0] === 'function') {
+        args.fn = arguments[0];
+        args.ctx = arguments[1];
+      } else {
+        args.options = arguments[0];
+        args.fn = arguments[1];
+      }
+    } else {
+      args.options = arguments[0];
+      args.fn = arguments[1];
+      args.ctx = arguments[2];
+    }
+    args.options = args.options || {};
+    if (!args.options.strategy) {
+      args.options.strategy = 'pre';
+    }
+    if (!walkStrategies[args.options.strategy]) {
+      throw new Error('Unknown tree walk strategy. Valid strategies are \'pre\' [default], \'post\' and \'breadth\'.');
+    }
+    return args;
+  }
+
+  Node.prototype.walk = function () {
+    var args;
+    args = parseArgs.apply(this, arguments);
+    walkStrategies[args.options.strategy].call(this, args.fn, args.ctx);
+  };
+
+  walkStrategies.pre = function depthFirstPreOrder(callback, context) {
+    var i, childCount, keepGoing;
+    keepGoing = callback.call(context, this);
+    for (i = 0, childCount = this.children.length; i < childCount; i++) {
+      if (keepGoing === false) {
+        return false;
+      }
+      keepGoing = depthFirstPreOrder.call(this.children[i], callback, context);
+    }
+    return keepGoing;
+  };
+
+  walkStrategies.post = function depthFirstPostOrder(callback, context) {
+    var i, childCount, keepGoing;
+    for (i = 0, childCount = this.children.length; i < childCount; i++) {
+      keepGoing = depthFirstPostOrder.call(this.children[i], callback, context);
+      if (keepGoing === false) {
+        return false;
+      }
+    }
+    keepGoing = callback.call(context, this);
+    return keepGoing;
+  };
+
+  walkStrategies.breadth = function breadthFirst(callback, context) {
+    var queue = [this];
+    (function processQueue() {
+      var i, childCount, node;
+      if (queue.length === 0) {
+        return;
+      }
+      node = queue.shift();
+      for (i = 0, childCount = node.children.length; i < childCount; i++) {
+        queue.push(node.children[i]);
+      }
+      if (callback.call(context, node) !== false) {
+        processQueue();
+      }
+    })();
+  };
+
+  Node.prototype.all = function () {
+    var args, all = [];
+    args = parseArgs.apply(this, arguments);
+    walkStrategies[args.options.strategy].call(this, function (node) {
+      if (args.fn.call(args.ctx, node)) {
+        all.push(node);
+      }
+    }, args.ctx);
+    return all;
+  };
+
+  Node.prototype.first = function () {
+    var args, first;
+    args = parseArgs.apply(this, arguments);
+    walkStrategies[args.options.strategy].call(this, function (node) {
+      if (args.fn.call(args.ctx, node)) {
+        first = node;
+        return false;
+      }
+    }, args.ctx);
+    return first;
+  };
+
+  Node.prototype.drop = function () {
+    var indexOfChild;
+    if (!this.isRoot()) {
+      indexOfChild = this.parent.children.indexOf(this);
+      this.parent.children.splice(indexOfChild, 1);
+      this.parent.model.children.splice(indexOfChild, 1);
+      this.parent = undefined;
+      delete this.parent;
+    }
+    return this;
+  };
+
+  if (typeof exports === 'object') {
+    module.exports = TreeModel;
+  } else if (typeof define === 'function' && define.amd) {
+    define(function () {
+      return TreeModel;
+    });
+  } else {
+    this.TreeModel = TreeModel;
+  }
+}).call(this);
