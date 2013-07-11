@@ -1,6 +1,6 @@
 {
   "name": "tree-model",
-  "version": "v0.2.1",
+  "version": "v0.2.2",
   "description": "Manipulate and traverse tree-like structures in javascript.",
   "keywords": ["tree", "hierarchy", "browser", "node", "requirejs"],
   "homepage": "http://jnuno.com/tree-model-js",
@@ -8,6 +8,6 @@
   "bugs": "https://github.com/joaonuno/tree-model-js/issues",
   "license": "MIT",
   "author": "João Nuno Silva <jnss81@gmail.com> (http://jnuno.com)",
-  "files": ["TreeModel.js"],
+  "files": ["TreeModel.js", "TreeModel-min.js"],
   "main": "TreeModel.js"
 }
