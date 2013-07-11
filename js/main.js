@@ -93,7 +93,7 @@ $(function () {
       if (svg) {
         svg.remove();
       }
-      $('#svg').append('<svg width="400" height="400"></svg>');
+      $('#svg').append('<svg width="390" height="390"></svg>');
       svg = d3.select('svg');
       ui.parse.fn(root, 75, 5);
     },

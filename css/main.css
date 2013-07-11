@@ -28,3 +28,7 @@ body {
 [data-play] {
     margin-right: 25px;
 }
+
+.link-to-repo {
+    margin-bottom: 10px;
+}
