@@ -59,10 +59,10 @@
       this.model[this.config.childrenPropertyName] = [];
     }
     this.model[this.config.childrenPropertyName].push(child.model);
-    // TODO Refactor this to avoid using sort
-    this.model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
-    index = this.model[this.config.childrenPropertyName].lastIndexOf(child);
-    this.children.splice(index, 0, child);
+    if (this.config.modelComparatorFn) {
+      this.model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
+    }
+    this.children.push(child);
     return child;
   };
 
