@@ -63,7 +63,7 @@ describe('TreeModel', function () {
             },
             {
               id: 12,
-              children: [{id: 121}, {id: 122}]
+              children: [{id: 121}, {id: 122}, {id: 123}, {id: 124}, {id: 125}, {id: 126}, {id: 127}, {id: 128}, {id: 129}, {id: 1210}, {id: 1211}]
             }
           ]
         });
@@ -80,7 +80,7 @@ describe('TreeModel', function () {
             },
             {
               id: 12,
-              children: [{id: 121}, {id: 122}]
+              children: [{id: 121}, {id: 122}, {id: 123}, {id: 124}, {id: 125}, {id: 126}, {id: 127}, {id: 128}, {id: 129}, {id: 1210}, {id: 1211}]
             }
           ]
         });
@@ -90,10 +90,10 @@ describe('TreeModel', function () {
 
         node12 = root.children[1];
         assert.isArray(node12.children);
-        assert.lengthOf(node12.children, 2);
+        assert.lengthOf(node12.children, 11);
         assert.deepEqual(node12.model, {
           id: 12,
-          children: [{id: 121}, {id: 122}]
+	  children: [{id: 121}, {id: 122}, {id: 123}, {id: 124}, {id: 125}, {id: 126}, {id: 127}, {id: 128}, {id: 129}, {id: 1210}, {id: 1211}]
         });
 
         assert.deepEqual(node12, node12.children[0].parent);

@@ -14,9 +14,7 @@
     config = config || {};
     this.config = config;
     this.config.childrenPropertyName = config.childrenPropertyName || 'children';
-    this.config.modelComparatorFn = config.modelComparatorFn || function () {
-      return 0;
-    };
+    this.config.modelComparatorFn = config.modelComparatorFn || null;
   }
 
   TreeModel.prototype.parse = function (model) {
@@ -28,7 +26,9 @@
 
     node = new Node(this.config, model);
     if (model[this.config.childrenPropertyName] instanceof Array) {
-      model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
+      if (this.config.modelComparatorFn) {
+        model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
+      }
       for (i = 0, childCount = model[this.config.childrenPropertyName].length; i < childCount; i++) {
         _addChildToNode(node, this.parse(model[this.config.childrenPropertyName][i]));
       }
@@ -59,8 +59,9 @@
       this.model[this.config.childrenPropertyName] = [];
     }
     this.model[this.config.childrenPropertyName].push(child.model);
-    // TODO Refactor this to avoid using sort
-    this.model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
+    if (this.config.modelComparatorFn) {
+      this.model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
+    }
     index = this.model[this.config.childrenPropertyName].lastIndexOf(child);
     this.children.splice(index, 0, child);
     return child;
