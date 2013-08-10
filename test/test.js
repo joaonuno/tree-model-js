@@ -63,7 +63,7 @@ describe('TreeModel', function () {
             },
             {
               id: 12,
-              children: [{id: 121}, {id: 122}]
+              children: [{id: 121}, {id: 122}, {id: 123}, {id: 124}, {id: 125}, {id: 126}, {id: 127}, {id: 128}, {id: 129}, {id: 1210}, {id: 1211}]
             }
           ]
         });
@@ -80,7 +80,7 @@ describe('TreeModel', function () {
             },
             {
               id: 12,
-              children: [{id: 121}, {id: 122}]
+              children: [{id: 121}, {id: 122}, {id: 123}, {id: 124}, {id: 125}, {id: 126}, {id: 127}, {id: 128}, {id: 129}, {id: 1210}, {id: 1211}]
             }
           ]
         });
@@ -90,10 +90,10 @@ describe('TreeModel', function () {
 
         node12 = root.children[1];
         assert.isArray(node12.children);
-        assert.lengthOf(node12.children, 2);
+        assert.lengthOf(node12.children, 11);
         assert.deepEqual(node12.model, {
           id: 12,
-          children: [{id: 121}, {id: 122}]
+	  children: [{id: 121}, {id: 122}, {id: 123}, {id: 124}, {id: 125}, {id: 126}, {id: 127}, {id: 128}, {id: 129}, {id: 1210}, {id: 1211}]
         });
 
         assert.deepEqual(node12, node12.children[0].parent);
@@ -114,6 +114,20 @@ describe('TreeModel', function () {
         assert.deepEqual(root.model.children, [{id: 11}, {id: 12}, {id: 13}, {id: 10}]);
       });
     });
+
+      describe('addChild() out of order', function() {
+	  var root;
+	  beforeEach(function () {
+              root = treeModel.parse({id: 0});
+	  });
+	  it('should add child to the end', function() {
+              root.addChild(treeModel.parse({id: 1}));
+              root.addChild(treeModel.parse({id: 2}));
+
+	      assert.equal(root.children[0].model.id, 1);
+	      assert.equal(root.children[1].model.id, 2);
+	  });
+      });
 
     describe('getPath()', function () {
       var root;
