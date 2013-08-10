@@ -62,8 +62,7 @@
     if (this.config.modelComparatorFn) {
       this.model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
     }
-    index = this.model[this.config.childrenPropertyName].lastIndexOf(child);
-    this.children.splice(index, 0, child);
+    this.children.push(child);
     return child;
   };
 
