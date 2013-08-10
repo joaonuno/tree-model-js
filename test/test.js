@@ -115,6 +115,20 @@ describe('TreeModel', function () {
       });
     });
 
+      describe('addChild() out of order', function() {
+	  var root;
+	  beforeEach(function () {
+              root = treeModel.parse({id: 0});
+	  });
+	  it('should add child to the end', function() {
+              root.addChild(treeModel.parse({id: 1}));
+              root.addChild(treeModel.parse({id: 2}));
+
+	      assert.equal(root.children[0].model.id, 1);
+	      assert.equal(root.children[1].model.id, 2);
+	  });
+      });
+
     describe('getPath()', function () {
       var root;
 
