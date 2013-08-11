@@ -58,12 +58,18 @@
     if (!(this.model[this.config.childrenPropertyName] instanceof Array)) {
       this.model[this.config.childrenPropertyName] = [];
     }
-    this.model[this.config.childrenPropertyName].push(child.model);
+
     if (this.config.modelComparatorFn) {
+      // TODO Refactor this to avoid using sort
+      this.model[this.config.childrenPropertyName].push(child.model);
       this.model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
+      // Keep child nodes and model child nodes positions in sync
+      index = this.model[this.config.childrenPropertyName].lastIndexOf(child.model);
+      this.children.splice(index, 0, child);
+    } else {
+      this.model[this.config.childrenPropertyName].push(child.model);
+      this.children.push(child);
     }
-    index = this.model[this.config.childrenPropertyName].lastIndexOf(child);
-    this.children.splice(index, 0, child);
     return child;
   };
 

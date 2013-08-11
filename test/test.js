@@ -443,6 +443,18 @@ describe('TreeModel', function () {
         assert.lengthOf(root.children, 4);
         assert.deepEqual(root.model.deps, [{id: 13}, {id: 12}, {id: 11}, {id: 10}]);
       });
+
+      it('should keep child nodes and model child nodes positions in sync', function () {
+        root.addChild(treeModel.parse({id: 13}));
+        root.addChild(treeModel.parse({id: 10}));
+        assert.lengthOf(root.children, 4);
+        assert.deepEqual(root.model.deps, [{id: 13}, {id: 12}, {id: 11}, {id: 10}]);
+
+        assert.equal(root.children[0].model.id, 13);
+        assert.equal(root.children[1].model.id, 12);
+        assert.equal(root.children[2].model.id, 11);
+        assert.equal(root.children[3].model.id, 10);
+      });
     });
   });
 });
