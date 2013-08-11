@@ -14,7 +14,7 @@
     config = config || {};
     this.config = config;
     this.config.childrenPropertyName = config.childrenPropertyName || 'children';
-    this.config.modelComparatorFn = config.modelComparatorFn || null;
+    this.config.modelComparatorFn = config.modelComparatorFn;
   }
 
   TreeModel.prototype.parse = function (model) {
