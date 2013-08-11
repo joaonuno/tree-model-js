@@ -149,6 +149,10 @@ describe('TreeModel', function () {
         root.addChild(treeModel.parse({id: 10}));
         assert.deepEqual(root.model.children, [{id: 11}, {id: 12}, {id: 13}, {id: 10}]);
       });
+
+      it('should throw an error when child is not a Node', function () {
+        assert.throws(root.addChild.bind(root, {children: []}), TypeError, 'Child must be of type Node.');
+      });
     });
 
     describe('getPath()', function () {

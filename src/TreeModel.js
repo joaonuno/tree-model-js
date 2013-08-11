@@ -54,6 +54,11 @@
 
   Node.prototype.addChild = function (child) {
     var index;
+
+    if (!(child instanceof Node)) {
+      throw new TypeError('Child must be of type Node.');
+    }
+
     child.parent = this;
     if (!(this.model[this.config.childrenPropertyName] instanceof Array)) {
       this.model[this.config.childrenPropertyName] = [];
