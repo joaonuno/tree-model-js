@@ -1,4 +1,4 @@
-// TreeModel.js v0.2.2
+// TreeModel.js v0.3.0
 // (c) 2013 João Nuno Silva
 // TreeModel may be freely distributed under the MIT license.
 
@@ -14,9 +14,7 @@
     config = config || {};
     this.config = config;
     this.config.childrenPropertyName = config.childrenPropertyName || 'children';
-    this.config.modelComparatorFn = config.modelComparatorFn || function () {
-      return 0;
-    };
+    this.config.modelComparatorFn = config.modelComparatorFn;
   }
 
   TreeModel.prototype.parse = function (model) {
@@ -28,7 +26,11 @@
 
     node = new Node(this.config, model);
     if (model[this.config.childrenPropertyName] instanceof Array) {
-      model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
+      if (this.config.modelComparatorFn) {
+        model[this.config.childrenPropertyName] = mergeSort(
+          this.config.modelComparatorFn,
+          model[this.config.childrenPropertyName]);
+      }
       for (i = 0, childCount = model[this.config.childrenPropertyName].length; i < childCount; i++) {
         _addChildToNode(node, this.parse(model[this.config.childrenPropertyName][i]));
       }
@@ -54,15 +56,30 @@
 
   Node.prototype.addChild = function (child) {
     var index;
+
+    if (!(child instanceof Node)) {
+      throw new TypeError('Child must be of type Node.');
+    }
+
     child.parent = this;
     if (!(this.model[this.config.childrenPropertyName] instanceof Array)) {
       this.model[this.config.childrenPropertyName] = [];
     }
-    this.model[this.config.childrenPropertyName].push(child.model);
-    // TODO Refactor this to avoid using sort
-    this.model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
-    index = this.model[this.config.childrenPropertyName].lastIndexOf(child);
-    this.children.splice(index, 0, child);
+
+    if (this.config.modelComparatorFn) {
+      // Find the index to insert the child
+      index = findInsertIndex(
+        this.config.modelComparatorFn,
+        this.model[this.config.childrenPropertyName],
+        child.model);
+      // Add to the model children
+      this.model[this.config.childrenPropertyName].splice(index, 0, child.model);
+      // Add to the node children
+      this.children.splice(index, 0, child);
+    } else {
+      this.model[this.config.childrenPropertyName].push(child.model);
+      this.children.push(child);
+    }
     return child;
   };
 
@@ -85,7 +102,7 @@
    * function will be saved to args.fn. The last optional argument is the context on
    * which the callback function will be called. It will be available in args.ctx.
    *
-   * @return Parsed arguments.
+   * @returns Parsed arguments.
    */
   function parseArgs() {
     var args = {};
@@ -195,6 +212,68 @@
     }
     return this;
   };
+
+  /**
+   * Sort an array using the merge sort algorithm.
+   *
+   * @param {function} comparatorFn The comparator function.
+   * @param {array} arr The array to sort.
+   * @returns {array} The sorted array.
+   */
+  function mergeSort(comparatorFn, arr) {
+    var len = arr.length, firstHalf, secondHalf;
+    if (len >= 2) {
+      firstHalf = arr.slice(0, len / 2);
+      secondHalf = arr.slice(len / 2, len);
+      return merge(comparatorFn, mergeSort(comparatorFn, firstHalf), mergeSort(comparatorFn, secondHalf));
+    } else {
+      return arr;
+    }
+  }
+
+  /**
+   * The merge part of the merge sort algorithm.
+   *
+   * @param {function} comparatorFn The comparator function.
+   * @param {array} arr1 The first sorted array.
+   * @param {array} arr2 The second sorted array.
+   * @returns {array} The merged and sorted array.
+   */
+  function merge(comparatorFn, arr1, arr2) {
+    var result = [], left1 = arr1.length, left2 = arr2.length;
+    while (left1 > 0 && left2 > 0) {
+      if (comparatorFn(arr1[0], arr2[0]) <= 0) {
+        result.push(arr1.shift());
+        left1--;
+      } else {
+        result.push(arr2.shift());
+        left2--;
+      }
+    }
+    if (left1 > 0) {
+      result.push.apply(result, arr1);
+    } else {
+      result.push.apply(result, arr2);
+    }
+    return result;
+  }
+
+  /**
+   * Find the index at which the element should be inserted at the array to keep the sort order.
+   *
+   * @param {function} comparatorFn The comparator function.
+   * @param {array} arr The sorted array.
+   * @param {object} el The element to insert.
+   */
+  function findInsertIndex(comparatorFn, arr, el) {
+    var i, len;
+    for (i = 0, len = arr.length; i < len; i++) {
+      if (comparatorFn(arr[i], el) > 0) {
+        break;
+      }
+    }
+    return i;
+  }
 
   if (typeof exports === 'object') {
     module.exports = TreeModel;
