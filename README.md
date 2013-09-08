@@ -41,7 +41,7 @@ var TreeModel = require('tree-model'),
 Valid properties for the options object are:
 
 * `childrenPropertyName` - The name for the children array property. Default is `children`;
-* `modelComparatorFn` - A comparator function to sort the children when parsing the model and adding children. The default order policy is to keep the parsed order and append new children. The comparator function receives the model for two nodes just like the [Array.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) function.
+* `modelComparatorFn` - A comparator function to sort the children when parsing the model and adding children. The default order policy is to keep the parsed order and append new children. The comparator function receives the model for two nodes just like the [Array.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) function. The provided sort algorithm is **stable**.
 
 #### `Node tree.parse(model)`
 <p>Parse the given user defined model and return the root Node object.</p>
@@ -66,13 +66,22 @@ Valid properties for the options object are:
 * `{strategy: 'post'}` - Depth-first post-order;
 * `{strategy: 'breadth'}` - Breadth-first.
 
-## Running Tests
+## Contributing
+#### Running Tests
 
 The tests require npm libraries mocha, chai, and sinon. To install them:
 
 `npm install -g mocha chai sinon`
 
 To run tests, type `mocha`
+#### Code Linting
+Install [jshint](http://jshint.com):
+
+`npm install -g jshint`
+
+Check src and tests:
+
+`jshint src/TreeModel.js test/test.js`
 
 <br />
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/joaonuno/tree-model-js/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
