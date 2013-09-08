@@ -9,5 +9,13 @@
   "license": "MIT",
   "author": "João Nuno Silva <jnss81@gmail.com> (http://jnuno.com)",
   "files": ["TreeModel.js", "TreeModel-min.js"],
-  "main": "TreeModel.js"
+  "main": "TreeModel.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "mocha": "1.12.1",
+    "sinon": "1.7.3",
+    "chai": "1.7.2"
+  }
 }

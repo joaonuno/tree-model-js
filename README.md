@@ -69,19 +69,14 @@ Valid properties for the options object are:
 ## Contributing
 #### Running Tests
 
-The tests require npm libraries mocha, chai, and sinon. To install them:
+The tests require npm libraries mocha, chai, and sinon. To install them run: `npm install`
 
-`npm install -g mocha chai sinon`
+To run tests, type: `npm test`
 
-To run tests, type `mocha`
 #### Code Linting
-Install [jshint](http://jshint.com):
+Install [jshint](http://jshint.com): `npm install -g jshint`
 
-`npm install -g jshint`
-
-Check src and tests:
-
-`jshint src/TreeModel.js test/test.js`
+Check src and tests: `jshint src/TreeModel.js test/test.js`
 
 <br />
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/joaonuno/tree-model-js/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
