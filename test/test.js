@@ -384,8 +384,8 @@ describe('TreeModel', function () {
     });
 
     describe('parse()', function () {
-      it('should create a root and sort the respective children according to the comparator', function () {
-        var root, node12;
+      it('should create a root and stable sort the respective children according to the comparator', function () {
+        var root, node12, i;
 
         root = treeModel.parse({
           id: 1,
@@ -396,7 +396,25 @@ describe('TreeModel', function () {
             },
             {
               id: 12,
-              deps: [{id: 121}, {id: 122}]
+              deps: [
+                {id: 122, stable: 1},
+                {id: 121, stable: 1},
+                {id: 121, stable: 2},
+                {id: 121, stable: 3},
+                {id: 121, stable: 4},
+                {id: 121, stable: 5},
+                {id: 121, stable: 6},
+                {id: 121, stable: 7},
+                {id: 121, stable: 8},
+                {id: 121, stable: 9},
+                {id: 121, stable: 10},
+                {id: 121, stable: 11},
+                {id: 121, stable: 12},
+                {id: 121, stable: 13},
+                {id: 121, stable: 14},
+                {id: 121, stable: 15},
+                {id: 122, stable: 2}
+              ]
             }
           ]
         });
@@ -409,7 +427,25 @@ describe('TreeModel', function () {
           deps: [
             {
               id: 12,
-              deps: [{id: 122}, {id: 121}]
+              deps: [
+                {id: 122, stable: 1},
+                {id: 122, stable: 2},
+                {id: 121, stable: 1},
+                {id: 121, stable: 2},
+                {id: 121, stable: 3},
+                {id: 121, stable: 4},
+                {id: 121, stable: 5},
+                {id: 121, stable: 6},
+                {id: 121, stable: 7},
+                {id: 121, stable: 8},
+                {id: 121, stable: 9},
+                {id: 121, stable: 10},
+                {id: 121, stable: 11},
+                {id: 121, stable: 12},
+                {id: 121, stable: 13},
+                {id: 121, stable: 14},
+                {id: 121, stable: 15}
+              ]
             },
             {
               id: 11,
@@ -423,32 +459,95 @@ describe('TreeModel', function () {
 
         node12 = root.children[0];
         assert.isArray(node12.children);
-        assert.lengthOf(node12.children, 2);
+        assert.lengthOf(node12.children, 17);
         assert.deepEqual(node12.model, {
           id: 12,
-          deps: [{id: 122}, {id: 121}]
+          deps: [
+            {id: 122, stable: 1},
+            {id: 122, stable: 2},
+            {id: 121, stable: 1},
+            {id: 121, stable: 2},
+            {id: 121, stable: 3},
+            {id: 121, stable: 4},
+            {id: 121, stable: 5},
+            {id: 121, stable: 6},
+            {id: 121, stable: 7},
+            {id: 121, stable: 8},
+            {id: 121, stable: 9},
+            {id: 121, stable: 10},
+            {id: 121, stable: 11},
+            {id: 121, stable: 12},
+            {id: 121, stable: 13},
+            {id: 121, stable: 14},
+            {id: 121, stable: 15}
+          ]
         });
 
-        assert.deepEqual(node12, node12.children[0].parent);
-        assert.deepEqual(node12, node12.children[1].parent);
+        for (i = 0; i < 17; i++) {
+          assert.deepEqual(node12, node12.children[i].parent);
+        }
       });
     });
 
     describe('addChild()', function () {
-      var root;
-
-      beforeEach(function () {
-        root = treeModel.parse({id: 1, deps: [{id: 12}, {id: 11}]});
-      });
-
       it('should add child respecting the given comparator', function () {
-        root.addChild(treeModel.parse({id: 13}));
-        root.addChild(treeModel.parse({id: 10}));
-        assert.lengthOf(root.children, 4);
-        assert.deepEqual(root.model.deps, [{id: 13}, {id: 12}, {id: 11}, {id: 10}]);
+        var root;
+        root = treeModel.parse({id: 1, deps: [
+          {id: 12, stable: 1},
+          {id: 11, stable: 1},
+          {id: 11, stable: 2},
+          {id: 11, stable: 3},
+          {id: 11, stable: 4},
+          {id: 11, stable: 5},
+          {id: 11, stable: 6},
+          {id: 11, stable: 7},
+          {id: 12, stable: 2},
+          {id: 11, stable: 8},
+          {id: 11, stable: 9},
+          {id: 11, stable: 10},
+          {id: 11, stable: 11},
+          {id: 11, stable: 12},
+          {id: 11, stable: 13},
+          {id: 11, stable: 14},
+          {id: 11, stable: 15},
+          {id: 13, stable: 1},
+          {id: 12, stable: 3}
+        ]});
+        root.addChild(treeModel.parse({id: 13, stable: 2}));
+        root.addChild(treeModel.parse({id: 10, stable: 1}));
+        root.addChild(treeModel.parse({id: 10, stable: 2}));
+        root.addChild(treeModel.parse({id: 12, stable: 4}));
+        assert.lengthOf(root.children, 23);
+        assert.deepEqual(root.model.deps, [
+          {id: 13, stable: 1},
+          {id: 13, stable: 2},
+          {id: 12, stable: 1},
+          {id: 12, stable: 2},
+          {id: 12, stable: 3},
+          {id: 12, stable: 4},
+          {id: 11, stable: 1},
+          {id: 11, stable: 2},
+          {id: 11, stable: 3},
+          {id: 11, stable: 4},
+          {id: 11, stable: 5},
+          {id: 11, stable: 6},
+          {id: 11, stable: 7},
+          {id: 11, stable: 8},
+          {id: 11, stable: 9},
+          {id: 11, stable: 10},
+          {id: 11, stable: 11},
+          {id: 11, stable: 12},
+          {id: 11, stable: 13},
+          {id: 11, stable: 14},
+          {id: 11, stable: 15},
+          {id: 10, stable: 1},
+          {id: 10, stable: 2}
+        ]);
       });
 
       it('should keep child nodes and model child nodes positions in sync', function () {
+        var root;
+        root = treeModel.parse({id: 1, deps: [{id: 12}, {id: 11}]});
         root.addChild(treeModel.parse({id: 13}));
         root.addChild(treeModel.parse({id: 10}));
         assert.lengthOf(root.children, 4);
