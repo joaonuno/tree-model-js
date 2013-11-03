@@ -4,7 +4,7 @@ var chai, assert, sinon, spy, TreeModel;
 chai = require('chai');
 sinon = require('sinon');
 spy = sinon.spy;
-TreeModel = require('../src/TreeModel');
+TreeModel = require('..');
 assert = chai.assert;
 chai.Assertion.includeStack = true;
 

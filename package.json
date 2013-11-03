@@ -1,21 +1,30 @@
 {
   "name": "tree-model",
-  "version": "v0.3.0",
+  "version": "v0.4.0",
   "description": "Manipulate and traverse tree-like structures in javascript.",
-  "keywords": ["tree", "hierarchy", "browser", "node", "requirejs"],
+  "keywords": [
+    "tree",
+    "hierarchy",
+    "browser",
+    "node",
+    "requirejs"
+  ],
   "homepage": "http://jnuno.com/tree-model-js",
   "repository": "https://github.com/joaonuno/tree-model-js",
   "bugs": "https://github.com/joaonuno/tree-model-js/issues",
   "license": "MIT",
   "author": "João Nuno Silva <jnss81@gmail.com> (http://jnuno.com)",
-  "files": ["TreeModel.js", "TreeModel-min.js"],
   "main": "TreeModel.js",
   "scripts": {
     "test": "mocha"
   },
   "devDependencies": {
-    "mocha": "1.12.1",
+    "mocha": "1.14.0",
     "sinon": "1.7.3",
-    "chai": "1.7.2"
+    "chai": "1.8.1"
+  },
+  "dependencies": {
+    "mergesort": "0.0.1",
+    "find-insert-index": "0.0.1"
   }
 }

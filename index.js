@@ -1,9 +1,8 @@
-// TreeModel.js v0.3.0
-// (c) 2013 João Nuno Silva
-// TreeModel may be freely distributed under the MIT license.
+var mergeSort, findInsertIndex;
+mergeSort = require('mergesort');
+findInsertIndex = require('find-insert-index');
 
-(function () {
-  /* global define */
+module.exports = (function () {
   'use strict';
 
   var walkStrategies;
@@ -213,75 +212,5 @@
     return this;
   };
 
-  /**
-   * Sort an array using the merge sort algorithm.
-   *
-   * @param {function} comparatorFn The comparator function.
-   * @param {array} arr The array to sort.
-   * @returns {array} The sorted array.
-   */
-  function mergeSort(comparatorFn, arr) {
-    var len = arr.length, firstHalf, secondHalf;
-    if (len >= 2) {
-      firstHalf = arr.slice(0, len / 2);
-      secondHalf = arr.slice(len / 2, len);
-      return merge(comparatorFn, mergeSort(comparatorFn, firstHalf), mergeSort(comparatorFn, secondHalf));
-    } else {
-      return arr;
-    }
-  }
-
-  /**
-   * The merge part of the merge sort algorithm.
-   *
-   * @param {function} comparatorFn The comparator function.
-   * @param {array} arr1 The first sorted array.
-   * @param {array} arr2 The second sorted array.
-   * @returns {array} The merged and sorted array.
-   */
-  function merge(comparatorFn, arr1, arr2) {
-    var result = [], left1 = arr1.length, left2 = arr2.length;
-    while (left1 > 0 && left2 > 0) {
-      if (comparatorFn(arr1[0], arr2[0]) <= 0) {
-        result.push(arr1.shift());
-        left1--;
-      } else {
-        result.push(arr2.shift());
-        left2--;
-      }
-    }
-    if (left1 > 0) {
-      result.push.apply(result, arr1);
-    } else {
-      result.push.apply(result, arr2);
-    }
-    return result;
-  }
-
-  /**
-   * Find the index at which the element should be inserted at the array to keep the sort order.
-   *
-   * @param {function} comparatorFn The comparator function.
-   * @param {array} arr The sorted array.
-   * @param {object} el The element to insert.
-   */
-  function findInsertIndex(comparatorFn, arr, el) {
-    var i, len;
-    for (i = 0, len = arr.length; i < len; i++) {
-      if (comparatorFn(arr[i], el) > 0) {
-        break;
-      }
-    }
-    return i;
-  }
-
-  if (typeof exports === 'object') {
-    module.exports = TreeModel;
-  } else if (typeof define === 'function' && define.amd) {
-    define(function () {
-      return TreeModel;
-    });
-  } else {
-    this.TreeModel = TreeModel;
-  }
-}).call(this);
+  return TreeModel;
+})();
