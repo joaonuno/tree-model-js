@@ -103,12 +103,12 @@ Starting from this node, find all Nodes that match the predicate and return thes
 Array<Node> node.all(predicate)
 ```
 
-### Walk the nodes
+### Walk the tree
 
 Starting from this node, traverse the subtree calling the action for each visited node. The action is a function which receives the visited Node as argument. The traversal can be halted by returning `false` from the action.
 
 ```js
-node.walk(action)
+node.walk([options], action, [context])
 ```
 
 **Note** - `first`, `all` and `walk` can optionally receive as first argument an object with traversal options. Currently the only supported option is the traversal `strategy` which can be any of the following:
