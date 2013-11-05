@@ -1,9 +1,10 @@
-// TreeModel.js v0.3.0
-// (c) 2013 João Nuno Silva
-// TreeModel may be freely distributed under the MIT license.
+!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.TreeModel=e():"undefined"!=typeof global?global.TreeModel=e():"undefined"!=typeof self&&(self.TreeModel=e())}(function(){var define,module,exports;
+return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var mergeSort, findInsertIndex;
+mergeSort = require('mergesort');
+findInsertIndex = require('find-insert-index');
 
-(function () {
-  /* global define */
+module.exports = (function () {
   'use strict';
 
   var walkStrategies;
@@ -213,6 +214,37 @@
     return this;
   };
 
+  return TreeModel;
+})();
+
+},{"find-insert-index":2,"mergesort":3}],2:[function(require,module,exports){
+module.exports = (function () {
+  'use strict';
+
+  /**
+   * Find the index to insert an element in array keeping the sort order.
+   *
+   * @param {function} comparatorFn The comparator function which sorted the array.
+   * @param {array} arr The sorted array.
+   * @param {object} el The element to insert.
+   */
+  function findInsertIndex(comparatorFn, arr, el) {
+    var i, len;
+    for (i = 0, len = arr.length; i < len; i++) {
+      if (comparatorFn(arr[i], el) > 0) {
+        break;
+      }
+    }
+    return i;
+  }
+
+  return findInsertIndex;
+})();
+
+},{}],3:[function(require,module,exports){
+module.exports = (function () {
+  'use strict';
+
   /**
    * Sort an array using the merge sort algorithm.
    *
@@ -227,7 +259,7 @@
       secondHalf = arr.slice(len / 2, len);
       return merge(comparatorFn, mergeSort(comparatorFn, firstHalf), mergeSort(comparatorFn, secondHalf));
     } else {
-      return arr;
+      return arr.slice();
     }
   }
 
@@ -258,30 +290,10 @@
     return result;
   }
 
-  /**
-   * Find the index at which the element should be inserted at the array to keep the sort order.
-   *
-   * @param {function} comparatorFn The comparator function.
-   * @param {array} arr The sorted array.
-   * @param {object} el The element to insert.
-   */
-  function findInsertIndex(comparatorFn, arr, el) {
-    var i, len;
-    for (i = 0, len = arr.length; i < len; i++) {
-      if (comparatorFn(arr[i], el) > 0) {
-        break;
-      }
-    }
-    return i;
-  }
+  return mergeSort;
+})();
 
-  if (typeof exports === 'object') {
-    module.exports = TreeModel;
-  } else if (typeof define === 'function' && define.amd) {
-    define(function () {
-      return TreeModel;
-    });
-  } else {
-    this.TreeModel = TreeModel;
-  }
-}).call(this);
+},{}]},{},[1])
+(1)
+});
+;
