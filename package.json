@@ -16,12 +16,15 @@
   "author": "João Nuno Silva <jnss81@gmail.com> (http://jnuno.com)",
   "main": "TreeModel.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "dist": "mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js"
   },
   "devDependencies": {
     "mocha": "1.17.1",
     "sinon": "1.8.2",
-    "chai": "1.9.0"
+    "chai": "1.9.0",
+    "browserify": "3.31.2",
+    "uglify-js": "2.4.12"
   },
   "dependencies": {
     "mergesort": "0.0.1",
