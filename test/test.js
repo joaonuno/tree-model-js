@@ -559,5 +559,34 @@ describe('TreeModel', function () {
         assert.equal(root.children[3].model.id, 10);
       });
     });
+
+    describe('drop()', function () {
+      var root;
+
+      beforeEach(function () {
+        root = treeModel.parse({
+          id: 1,
+          deps: [
+            {
+              id: 11,
+              deps: [{id: 111}]
+            },
+            {
+              id: 12,
+              deps: [{id: 121}, {id: 122}]
+            }
+          ]
+        });
+      });
+
+      it('should give back the dropped node, even if it is the root', function () {
+        assert.deepEqual(root.drop(), root);
+      });
+
+      it('should give back the dropped node, which no longer be found in the original root', function () {
+        assert.deepEqual(root.first(idEq(11)).drop().model, {id: 11, deps: [{id: 111}]});
+        assert.isUndefined(root.first(idEq(11)));
+      });
+    });
   });
 });

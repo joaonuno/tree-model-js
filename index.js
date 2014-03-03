@@ -205,7 +205,7 @@ module.exports = (function () {
     if (!this.isRoot()) {
       indexOfChild = this.parent.children.indexOf(this);
       this.parent.children.splice(indexOfChild, 1);
-      this.parent.model.children.splice(indexOfChild, 1);
+      this.parent.model[this.config.childrenPropertyName].splice(indexOfChild, 1);
       this.parent = undefined;
       delete this.parent;
     }
