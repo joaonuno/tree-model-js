@@ -1,8 +1,7 @@
-!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.TreeModel=e():"undefined"!=typeof global?global.TreeModel=e():"undefined"!=typeof self&&(self.TreeModel=e())}(function(){var define,module,exports;
-return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.TreeModel=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 var mergeSort, findInsertIndex;
-mergeSort = require('mergesort');
-findInsertIndex = require('find-insert-index');
+mergeSort = _dereq_('mergesort');
+findInsertIndex = _dereq_('find-insert-index');
 
 module.exports = (function () {
   'use strict';
@@ -207,7 +206,7 @@ module.exports = (function () {
     if (!this.isRoot()) {
       indexOfChild = this.parent.children.indexOf(this);
       this.parent.children.splice(indexOfChild, 1);
-      this.parent.model.children.splice(indexOfChild, 1);
+      this.parent.model[this.config.childrenPropertyName].splice(indexOfChild, 1);
       this.parent = undefined;
       delete this.parent;
     }
@@ -217,7 +216,7 @@ module.exports = (function () {
   return TreeModel;
 })();
 
-},{"find-insert-index":2,"mergesort":3}],2:[function(require,module,exports){
+},{"find-insert-index":2,"mergesort":3}],2:[function(_dereq_,module,exports){
 module.exports = (function () {
   'use strict';
 
@@ -241,7 +240,7 @@ module.exports = (function () {
   return findInsertIndex;
 })();
 
-},{}],3:[function(require,module,exports){
+},{}],3:[function(_dereq_,module,exports){
 module.exports = (function () {
   'use strict';
 
@@ -296,4 +295,3 @@ module.exports = (function () {
 },{}]},{},[1])
 (1)
 });
-;
