@@ -5,7 +5,6 @@ Manipulate and traverse tree-like structures in javascript.
 For download and demos, please [visit TreeModel website](http://jnuno.com/tree-model-js).
 
 [![Build Status](https://travis-ci.org/joaonuno/tree-model-js.png)](https://travis-ci.org/joaonuno/tree-model-js)
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/joaonuno/tree-model-js/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 ## Installation
 
