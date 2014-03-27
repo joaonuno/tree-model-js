@@ -32,3 +32,11 @@ body {
 .link-to-repo {
     margin-bottom: 10px;
 }
+
+a.twitter {
+    font-size: 75%;
+}
+
+a.twitter > img {
+    margin-right: 3px;
+}
