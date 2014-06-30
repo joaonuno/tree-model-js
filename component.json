@@ -12,7 +12,7 @@
   ],
   "dependencies": {
     "koellcode/mergesort": "*",
-    "koellcode/find-insert-index": "*"
+    "koellcode/find-insert-index-js": "*"
   },
   "scripts": ["index.js"],
   "main": "index.js",
