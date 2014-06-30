@@ -11,7 +11,7 @@
     "requirejs"
   ],
   "dependencies": {
-    "koellcode/mergesort": "*",
+    "koellcode/merge-sort-js": "*",
     "koellcode/find-insert-index-js": "*"
   },
   "scripts": ["index.js"],
