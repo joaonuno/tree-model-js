@@ -369,6 +369,34 @@ describe('TreeModel', function () {
         assert.isUndefined(root.first(idEq(11)));
       });
     });
+
+    describe('hasChildren()', function () {
+      var root;
+
+      beforeEach(function () {
+        root = treeModel.parse({
+          id: 1,
+          children: [
+            {
+              id: 11,
+              children: [{id: 111}]
+            },
+            {
+              id: 12,
+              children: [{id: 121}, {id: 122}]
+            }
+          ]
+        });
+      });
+
+      it('should return true for node with children', function () {
+        assert.equal(root.hasChildren(), true);
+      });
+
+      it('should return false for node without children', function () {
+        assert.equal(root.first(idEq(111)).hasChildren(), false);
+      });
+    });
   });
 
   describe('with custom children and comparator', function () {
@@ -586,6 +614,34 @@ describe('TreeModel', function () {
       it('should give back the dropped node, which no longer be found in the original root', function () {
         assert.deepEqual(root.first(idEq(11)).drop().model, {id: 11, deps: [{id: 111}]});
         assert.isUndefined(root.first(idEq(11)));
+      });
+    });
+
+    describe('hasChildren()', function () {
+      var root;
+
+      beforeEach(function () {
+        root = treeModel.parse({
+          id: 1,
+          deps: [
+            {
+              id: 11,
+              deps: [{id: 111}]
+            },
+            {
+              id: 12,
+              deps: [{id: 121}, {id: 122}]
+            }
+          ]
+        });
+      });
+
+      it('should return true for node with children', function () {
+        assert.equal(root.hasChildren(), true);
+      });
+
+      it('should return false for node without children', function () {
+        assert.equal(root.first(idEq(111)).hasChildren(), false);
       });
     });
   });

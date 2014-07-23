@@ -53,6 +53,14 @@ Return `true` if this Node is the root, `false` otherwise.
 Boolean node.isRoot()
 ```
 
+### Has Children?
+
+Return `true` if this Node has one or more children, `false` otherwise.
+
+```js
+Boolean node.hasChildren()
+```
+
 ### Add a child
 
 Add the given node as child of this one. Return the child Node.
