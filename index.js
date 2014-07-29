@@ -53,6 +53,10 @@ module.exports = (function () {
     return this.parent === undefined;
   };
 
+  Node.prototype.hasChildren = function () {
+    return this.children.length > 0;
+  };
+
   Node.prototype.addChild = function (child) {
     var index;
 
