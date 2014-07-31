@@ -128,14 +128,16 @@ These functions can also take, as the last parameter, the *context* on which the
 
 ## Contributing
 
-### Running Tests
+### Setup
 
-The tests require npm libraries mocha, chai, and sinon. To install them run: `npm install`
-
-To run tests, type: `npm test`
+Fork this repository and run `npm install` on the project root folder to make sure you have all project dependencies installed.
 
 ### Code Linting
 
-Install [jshint](http://jshint.com): `npm install -g jshint`
+Run `npm run lint`.
 
-Check src and tests: `jshint index.js test/test.js`
+This will check both source and tests for code correctness and style compliance.
+
+### Running Tests
+
+Run `npm test`.
