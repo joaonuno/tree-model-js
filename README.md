@@ -22,6 +22,10 @@ var TreeModel = require('tree-model'),
 
 [Visit TreeModel website](http://jnuno.com/tree-model-js) to download browser-ready bundles.
 
+## Questions?
+
+If you have any doubt using this library please post a question on http://stackoverflow.com using the tag `tree-model-js`.
+
 ## API Reference
 
 ### Create a new TreeModel
