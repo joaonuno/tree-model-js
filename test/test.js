@@ -341,6 +341,45 @@ describe('TreeModel', function () {
       });
     });
 
+    describe('leaves()', function () {
+      var root;
+
+      beforeEach(function () {
+        root = treeModel.parse({
+          id: 1,
+          children: [
+            {
+              id: 11,
+              children: [{id: 111}]
+            },
+            {
+              id: 12,
+              children: [{id: 121}, {id: 122}]
+            }
+          ]
+        });
+      });
+
+      it('should get an array with all leaves of a node', function () {
+        var leaves;
+        leaves = root.leaves();
+
+        assert.lengthOf(leaves, 3)
+        assert.strictEqual(leaves[0].model.id, 111)
+        assert.strictEqual(leaves[1].model.id, 121)
+        assert.strictEqual(leaves[2].model.id, 122)
+      });
+
+      it('should get the same Node if called on a leaf', function() {
+        var leaves, node;
+        node = root.first(idEq(111));
+        leaves = node.leaves();
+
+        assert.lengthOf(leaves, 1);
+        assert.deepEqual(leaves[0], node)
+      });
+    });
+
     describe('drop()', function () {
       var root;
 

@@ -209,6 +209,10 @@ module.exports = (function () {
     return first;
   };
 
+  Node.prototype.leaves = function () {
+    return this.all(function (node) { return node.isLeaf() });
+  };
+
   Node.prototype.drop = function () {
     var indexOfChild;
     if (!this.isRoot()) {
