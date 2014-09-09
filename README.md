@@ -57,6 +57,14 @@ Return `true` if this Node is the root, `false` otherwise.
 Boolean node.isRoot()
 ```
 
+### Is Leaf?
+
+Return `true` if this Node is a leaf, `false` otherwise.
+
+```js
+Boolean node.isLeaf()
+```
+
 ### Has Children?
 
 Return `true` if this Node has one or more children, `false` otherwise.
