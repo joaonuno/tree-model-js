@@ -425,6 +425,38 @@ describe('TreeModel', function () {
         assert.equal(root.first(idEq(111)).isRoot(), false);
       });
     });
+
+    describe('isLeaf()', function () {
+      var root;
+
+      beforeEach(function () {
+        root = treeModel.parse({
+          id: 1,
+          children: [
+            {
+              id: 11,
+              children: [{id: 111}]
+            },
+            {
+              id: 12,
+              children: [{id: 121}, {id: 122}]
+            }
+          ]
+        });
+      });
+
+      it('should return false for root node', function () {
+        assert.equal(root.isLeaf(), false);
+      });
+
+      it('should return false for node with children', function () {
+        assert.equal(root.first(idEq(11)).isLeaf(), false);
+      });
+
+      it('should return true for node without children', function () {
+        assert.equal(root.first(idEq(111)).isLeaf(), true);
+      });
+    });
   });
 
   describe('with custom children and comparator', function () {

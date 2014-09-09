@@ -53,6 +53,11 @@ module.exports = (function () {
     return this.parent === undefined;
   };
 
+  Node.prototype.isLeaf = function () {
+    return this.children.length == 0;
+  };
+
+
   Node.prototype.hasChildren = function () {
     return this.children.length > 0;
   };
