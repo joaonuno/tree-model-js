@@ -122,6 +122,14 @@ Starting from this node, find all Nodes that match the predicate and return thes
 Array<Node> node.all(predicate)
 ```
 
+### Find all leaves
+
+Return an array of leaves in the tree under this node.
+
+```js
+Array<Node> node.leaves()
+```
+
 ### Walk the tree
 
 Starting from this node, traverse the subtree calling the action for each visited node. The action is a function which receives the visited Node as argument. The traversal can be halted by returning `false` from the action.
