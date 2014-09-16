@@ -24,7 +24,7 @@ var TreeModel = require('tree-model'),
 
 ## Questions?
 
-If you have any doubt using this library please post a question on http://stackoverflow.com using the tag `tree-model-js`.
+If you have any doubt using this library please post a question on http://stackoverflow.com using the tag `treemodel`.
 
 ## API Reference
 
