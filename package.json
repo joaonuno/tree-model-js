@@ -26,7 +26,8 @@
     "chai": "1.9.1",
     "browserify": "5.9.1",
     "uglify-js": "2.4.15",
-    "jshint": "2.5.2"
+    "jshint": "2.5.2",
+    "underscore": "1.7.0"
   },
   "dependencies": {
     "mergesort": "0.0.1",
