@@ -153,6 +153,12 @@ describe('TreeModel', function () {
       it('should throw an error when child is not a Node', function () {
         assert.throws(root.addChild.bind(root, {children: []}), TypeError, 'Child must be of type Node.');
       });
+	  
+	  it('should add child at index', function () {
+          root.addChildAtIndex(treeModel.parse({ id: 13 }), 1);
+          assert.deepEqual(root.model.children, [{ id: 11 }, { id: 13 }, { id: 12 }]);
+      });
+	  
     });
 
     describe('getPath()', function () {

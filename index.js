@@ -58,33 +58,51 @@ module.exports = (function () {
   };
 
   Node.prototype.addChild = function (child) {
-    var index;
-
-    if (!(child instanceof Node)) {
-      throw new TypeError('Child must be of type Node.');
-    }
-
-    child.parent = this;
-    if (!(this.model[this.config.childrenPropertyName] instanceof Array)) {
-      this.model[this.config.childrenPropertyName] = [];
-    }
-
-    if (this.config.modelComparatorFn) {
-      // Find the index to insert the child
-      index = findInsertIndex(
-        this.config.modelComparatorFn,
-        this.model[this.config.childrenPropertyName],
-        child.model);
-      // Add to the model children
-      this.model[this.config.childrenPropertyName].splice(index, 0, child.model);
-      // Add to the node children
-      this.children.splice(index, 0, child);
-    } else {
-      this.model[this.config.childrenPropertyName].push(child.model);
-      this.children.push(child);
-    }
-    return child;
+      return addChild(this, child);
   };
+
+  Node.prototype.addChildAtIndex = function (child, index) {
+      return addChild(this, child, index);
+  };
+
+  function addChild(self, child, insertIndex) {
+      var index;
+
+      if (!(child instanceof Node)) {
+          throw new TypeError('Child must be of type Node.');
+      }
+
+      child.parent = self;
+      if (!(self.model[self.config.childrenPropertyName] instanceof Array)) {
+          self.model[self.config.childrenPropertyName] = [];
+      }
+
+      if (self.config.modelComparatorFn) {
+          // Find the index to insert the child
+          index = findInsertIndex(
+            self.config.modelComparatorFn,
+            self.model[self.config.childrenPropertyName],
+            child.model);
+
+          // Add to the model children
+          self.model[self.config.childrenPropertyName].splice(index, 0, child.model);
+
+          // Add to the node children
+          self.children.splice(index, 0, child);
+      } else {
+
+          if (insertIndex == undefined) {
+              self.model[self.config.childrenPropertyName].push(child.model);
+              self.children.push(child);
+          } else {
+
+              self.model[self.config.childrenPropertyName].splice(insertIndex, 0, child.model);
+              self.children.splice(index, 0, child);
+          }
+
+      }
+      return child;
+  }
 
   Node.prototype.getPath = function () {
     var path = [];
