@@ -73,6 +73,13 @@ Add the given node as child of this one. Return the child Node.
 Node parentNode.addChild(childNode)
 ```
 
+### Add a child at a given index
+
+Add the given node as child of this one at the given index. Return the child Node.
+
+```js
+Node parentNode.addChildAtIndex(childNode, index)
+```
 
 ### Get the node path
 

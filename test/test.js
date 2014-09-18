@@ -153,6 +153,25 @@ describe('TreeModel', function () {
       it('should throw an error when child is not a Node', function () {
         assert.throws(root.addChild.bind(root, {children: []}), TypeError, 'Child must be of type Node.');
       });
+
+      it('should add child at index', function () {
+        root.addChildAtIndex(treeModel.parse({ id: 13 }), 1);
+        assert.deepEqual(root.model.children, [{ id: 11 }, { id: 13 }, { id: 12 }]);
+      });
+
+      it('should throw an error when adding child at negative index', function () {
+        var child;
+
+        child = treeModel.parse({ id: 13 });
+        assert.throws(root.addChildAtIndex.bind(root, child, -1), Error, 'Invalid index.');
+      });
+
+      it('should throw an error when adding child at a too high index', function () {
+        var child;
+
+        child = treeModel.parse({ id: 13 });
+        assert.throws(root.addChildAtIndex.bind(root, child, 2), Error, 'Invalid index.');
+      });
     });
 
     describe('getPath()', function () {
@@ -585,6 +604,17 @@ describe('TreeModel', function () {
         assert.equal(root.children[1].model.id, 12);
         assert.equal(root.children[2].model.id, 11);
         assert.equal(root.children[3].model.id, 10);
+      });
+
+      it('should throw an error when adding child at index but a comparator was provided', function () {
+        var root, child;
+
+        root = treeModel.parse({id: 1, deps: [{id: 12}, {id: 11}]});
+        child = treeModel.parse({ id: 13 });
+        assert.throws(
+          root.addChildAtIndex.bind(root, child, 1),
+          Error,
+          'Cannot add child at index when using a comparator function.');
       });
     });
 
