@@ -17,7 +17,7 @@
   "main": "TreeModel.js",
   "scripts": {
     "test": "mocha",
-    "lint": "jshint index.js test/test.js",
+    "lint": "jshint index.js test/test.js && jscs index.js test/test.js",
     "dist": "mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js"
   },
   "devDependencies": {
@@ -26,7 +26,8 @@
     "chai": "1.9.1",
     "browserify": "5.9.1",
     "uglify-js": "2.4.15",
-    "jshint": "2.5.2"
+    "jshint": "2.5.5",
+    "jscs": "1.6.2"
   },
   "dependencies": {
     "mergesort": "0.0.1",

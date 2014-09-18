@@ -31,16 +31,20 @@ module.exports = (function () {
           model[this.config.childrenPropertyName]);
       }
       for (i = 0, childCount = model[this.config.childrenPropertyName].length; i < childCount; i++) {
-        _addChildToNode(node, this.parse(model[this.config.childrenPropertyName][i]));
+        addChildToNode(node, this.parse(model[this.config.childrenPropertyName][i]));
       }
     }
     return node;
   };
 
-  function _addChildToNode(node, child) {
+  function addChildToNode(node, child) {
     child.parent = node;
     node.children.push(child);
     return child;
+  }
+
+  function hasComparatorFunction(node) {
+    return typeof node.config.modelComparatorFn === 'function';
   }
 
   function Node(config, model) {
@@ -58,50 +62,54 @@ module.exports = (function () {
   };
 
   Node.prototype.addChild = function (child) {
-      return addChild(this, child);
+    return addChild(this, child);
   };
 
   Node.prototype.addChildAtIndex = function (child, index) {
-      return addChild(this, child, index);
+    if (hasComparatorFunction(this)) {
+      throw new Error('Cannot add child at index when using a comparator function.');
+    }
+
+    return addChild(this, child, index);
   };
 
   function addChild(self, child, insertIndex) {
-      var index;
+    var index;
 
-      if (!(child instanceof Node)) {
-          throw new TypeError('Child must be of type Node.');
-      }
+    if (!(child instanceof Node)) {
+      throw new TypeError('Child must be of type Node.');
+    }
 
-      child.parent = self;
-      if (!(self.model[self.config.childrenPropertyName] instanceof Array)) {
-          self.model[self.config.childrenPropertyName] = [];
-      }
+    child.parent = self;
+    if (!(self.model[self.config.childrenPropertyName] instanceof Array)) {
+      self.model[self.config.childrenPropertyName] = [];
+    }
 
-      if (self.config.modelComparatorFn) {
-          // Find the index to insert the child
-          index = findInsertIndex(
-            self.config.modelComparatorFn,
-            self.model[self.config.childrenPropertyName],
-            child.model);
+    if (hasComparatorFunction(self)) {
+      // Find the index to insert the child
+      index = findInsertIndex(
+      self.config.modelComparatorFn,
+      self.model[self.config.childrenPropertyName],
+      child.model);
 
-          // Add to the model children
-          self.model[self.config.childrenPropertyName].splice(index, 0, child.model);
+      // Add to the model children
+      self.model[self.config.childrenPropertyName].splice(index, 0, child.model);
 
-          // Add to the node children
-          self.children.splice(index, 0, child);
+      // Add to the node children
+      self.children.splice(index, 0, child);
+    } else {
+      if (insertIndex === undefined) {
+        self.model[self.config.childrenPropertyName].push(child.model);
+        self.children.push(child);
       } else {
-
-          if (insertIndex == undefined) {
-              self.model[self.config.childrenPropertyName].push(child.model);
-              self.children.push(child);
-          } else {
-
-              self.model[self.config.childrenPropertyName].splice(insertIndex, 0, child.model);
-              self.children.splice(index, 0, child);
-          }
-
+        if (insertIndex < 0 || insertIndex >= self.children.length) {
+          throw new Error('Invalid index.');
+        }
+        self.model[self.config.childrenPropertyName].splice(insertIndex, 0, child.model);
+        self.children.splice(index, 0, child);
       }
-      return child;
+    }
+    return child;
   }
 
   Node.prototype.getPath = function () {
