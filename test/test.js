@@ -159,6 +159,17 @@ describe('TreeModel', function () {
         assert.deepEqual(root.model.children, [{ id: 11 }, { id: 13 }, { id: 12 }]);
       });
 
+      it('should add child at the when index matches the children number', function () {
+        root.addChildAtIndex(treeModel.parse({ id: 13 }), 2);
+        assert.deepEqual(root.model.children, [{ id: 11 }, { id: 12 }, { id: 13 }]);
+      });
+
+      it('should add child at index 0 of a leaf', function () {
+        var leaf = root.first(idEq(11));
+        leaf.addChildAtIndex(treeModel.parse({ id: 111 }), 0);
+        assert.deepEqual(leaf.model.children, [{ id: 111 }]);
+      });
+
       it('should throw an error when adding child at negative index', function () {
         var child;
 
@@ -170,7 +181,7 @@ describe('TreeModel', function () {
         var child;
 
         child = treeModel.parse({ id: 13 });
-        assert.throws(root.addChildAtIndex.bind(root, child, 2), Error, 'Invalid index.');
+        assert.throws(root.addChildAtIndex.bind(root, child, 3), Error, 'Invalid index.');
       });
     });
 

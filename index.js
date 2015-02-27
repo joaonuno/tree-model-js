@@ -102,7 +102,7 @@ module.exports = (function () {
         self.model[self.config.childrenPropertyName].push(child.model);
         self.children.push(child);
       } else {
-        if (insertIndex < 0 || insertIndex >= self.children.length) {
+        if (insertIndex < 0 || insertIndex > self.children.length) {
           throw new Error('Invalid index.');
         }
         self.model[self.config.childrenPropertyName].splice(insertIndex, 0, child.model);
