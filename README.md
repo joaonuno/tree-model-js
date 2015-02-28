@@ -145,10 +145,10 @@ Fork this repository and run `npm install` on the project root folder to make su
 
 ### Code Linting
 
-Run `npm run lint`.
+Run `npm run lint`
 
 This will check both source and tests for code correctness and style compliance.
 
 ### Running Tests
 
-Run `npm test`.
+Run `npm test`
