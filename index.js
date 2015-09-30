@@ -9,6 +9,12 @@ module.exports = (function () {
 
   walkStrategies = {};
 
+  function k(result) {
+    return function () {
+      return result;
+    };
+  }
+
   function TreeModel(config) {
     config = config || {};
     this.config = config;
@@ -136,7 +142,11 @@ module.exports = (function () {
   function parseArgs() {
     var args = {};
     if (arguments.length === 1) {
-      args.fn = arguments[0];
+      if (typeof arguments[0] === 'function') {
+        args.fn = arguments[0];
+      } else {
+        args.options = arguments[0];
+      }
     } else if (arguments.length === 2) {
       if (typeof arguments[0] === 'function') {
         args.fn = arguments[0];
@@ -210,6 +220,7 @@ module.exports = (function () {
   Node.prototype.all = function () {
     var args, all = [];
     args = parseArgs.apply(this, arguments);
+    args.fn = args.fn || k(true);
     walkStrategies[args.options.strategy].call(this, function (node) {
       if (args.fn.call(args.ctx, node)) {
         all.push(node);
@@ -221,6 +232,7 @@ module.exports = (function () {
   Node.prototype.first = function () {
     var args, first;
     args = parseArgs.apply(this, arguments);
+    args.fn = args.fn || k(true);
     walkStrategies[args.options.strategy].call(this, function (node) {
       if (args.fn.call(args.ctx, node)) {
         first = node;

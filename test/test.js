@@ -342,6 +342,12 @@ describe('TreeModel', function () {
         assert.lengthOf(idLt0, 0);
       });
 
+      it('should get all nodes if no predicate is given', function () {
+        var allNodes;
+        allNodes = root.all();
+        assert.lengthOf(allNodes, 6);
+      });
+
       it('should get an array with the node itself if only the node matches the predicate', function () {
         var idEq1;
         idEq1 = root.all(idEq(1));
@@ -368,6 +374,54 @@ describe('TreeModel', function () {
         assert.lengthOf(idGt10AndChildOfRoot, 2);
         assert.strictEqual(idGt10AndChildOfRoot[0].model.id, 11);
         assert.strictEqual(idGt10AndChildOfRoot[1].model.id, 12);
+      });
+    });
+
+    describe('first()', function () {
+      var root;
+
+      beforeEach(function () {
+        root = treeModel.parse({
+          id: 1,
+          children: [
+            {
+              id: 11,
+              children: [{id: 111}]
+            },
+            {
+              id: 12,
+              children: [{id: 121}, {id: 122}]
+            }
+          ]
+        });
+      });
+
+      it('should get the first node when the predicate returns true', function () {
+        var first;
+        first = root.first(function () {
+          return true;
+        });
+        assert.equal(first.model.id, 1);
+      });
+
+      it('should get the first node when no predicate is given', function () {
+        var first;
+        first = root.first();
+        assert.equal(first.model.id, 1);
+      });
+
+      it('should get the first node with a different strategy when the predicate returns true', function () {
+        var first;
+        first = root.first({strategy: 'post'}, function () {
+          return true;
+        });
+        assert.equal(first.model.id, 111);
+      });
+
+      it('should get the first node with a different strategy when no predicate is given', function () {
+        var first;
+        first = root.first({strategy: 'post'});
+        assert.equal(first.model.id, 111);
       });
     });
 
