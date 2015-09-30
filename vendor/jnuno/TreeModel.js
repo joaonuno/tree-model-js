@@ -1,4 +1,4 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.TreeModel=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.TreeModel = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var mergeSort, findInsertIndex;
 mergeSort = require('mergesort');
 findInsertIndex = require('find-insert-index');
@@ -9,6 +9,12 @@ module.exports = (function () {
   var walkStrategies;
 
   walkStrategies = {};
+
+  function k(result) {
+    return function () {
+      return result;
+    };
+  }
 
   function TreeModel(config) {
     config = config || {};
@@ -137,7 +143,11 @@ module.exports = (function () {
   function parseArgs() {
     var args = {};
     if (arguments.length === 1) {
-      args.fn = arguments[0];
+      if (typeof arguments[0] === 'function') {
+        args.fn = arguments[0];
+      } else {
+        args.options = arguments[0];
+      }
     } else if (arguments.length === 2) {
       if (typeof arguments[0] === 'function') {
         args.fn = arguments[0];
@@ -211,6 +221,7 @@ module.exports = (function () {
   Node.prototype.all = function () {
     var args, all = [];
     args = parseArgs.apply(this, arguments);
+    args.fn = args.fn || k(true);
     walkStrategies[args.options.strategy].call(this, function (node) {
       if (args.fn.call(args.ctx, node)) {
         all.push(node);
@@ -222,6 +233,7 @@ module.exports = (function () {
   Node.prototype.first = function () {
     var args, first;
     args = parseArgs.apply(this, arguments);
+    args.fn = args.fn || k(true);
     walkStrategies[args.options.strategy].call(this, function (node) {
       if (args.fn.call(args.ctx, node)) {
         first = node;
