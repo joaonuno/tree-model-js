@@ -157,9 +157,10 @@ describe('TreeModel', function () {
       it('should add child at index', function () {
         root.addChildAtIndex(treeModel.parse({ id: 13 }), 1);
         assert.deepEqual(root.model.children, [{ id: 11 }, { id: 13 }, { id: 12 }]);
+        assert.equal(root.children[1].model.id, 13);
       });
 
-      it('should add child at the when index matches the children number', function () {
+      it('should add child at the end when index matches the children number', function () {
         root.addChildAtIndex(treeModel.parse({ id: 13 }), 2);
         assert.deepEqual(root.model.children, [{ id: 11 }, { id: 12 }, { id: 13 }]);
       });
