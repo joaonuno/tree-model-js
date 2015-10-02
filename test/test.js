@@ -191,7 +191,6 @@ describe('TreeModel', function () {
 
       beforeEach(function () {
         root = treeModel.parse({id: 1, children: [{id: 11}, {id: 12}, {id:13}]});
-        console.log(root);
       });
 
       it('should set the index of this among its parent\'s children', function () {
@@ -211,6 +210,7 @@ describe('TreeModel', function () {
           assert.equal(root.model[child.parent.config.childrenPropertyName].indexOf(child.model), i);
         }
       });
+
       it('keeps the order of all other nodes', function () {
         var child, oldOrder, i, j, k, l;
         child = root.children[0];
@@ -232,16 +232,20 @@ describe('TreeModel', function () {
           }
         }
       });
+
       it('should return itself', function () {
         var child = root.children[0];
         assert.equal(child.setIndex(1), child);
       });
+
       it('should throw an error when node is a root', function () {
         assert.throws(function () {root.setIndex(0);}, Error, 'Node is a root.');
       });
+
       it('should throw an error when setting to a negative index', function () {
         assert.throws(function () {root.children[0].setIndex(-1);}, Error, 'Invalid index.');
       });
+
       it('should throw an error when setting to a too high index', function () {
         assert.throws(function () {root.children[0].setIndex(root.children.length);}, Error, 'Invalid index.');
       });
@@ -742,6 +746,18 @@ describe('TreeModel', function () {
           root.addChildAtIndex.bind(root, child, 1),
           Error,
           'Cannot add child at index when using a comparator function.');
+      });
+    });
+
+    describe('setIndex()', function () {
+      it('should throw an error when adding child at index but a comparator was provided', function () {
+        var root, child;
+
+        root = treeModel.parse({id: 1, deps: [{id: 12}, {id: 11}]});
+        child = root.children[0];
+
+        assert.throws(function () {child.setIndex(0);}, Error,
+        'Cannot set node index when using a comparator function.');
       });
     });
 

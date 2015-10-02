@@ -80,6 +80,10 @@ module.exports = (function () {
   };
 
   Node.prototype.setIndex = function (index) {
+    if (hasComparatorFunction(this)) {
+      throw new Error('Cannot set node index when using a comparator function.');
+    }
+
     if (this.isRoot()) {
       throw new Error('Node is a root.');
     }
