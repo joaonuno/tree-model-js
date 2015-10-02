@@ -81,6 +81,14 @@ Add the given node as child of this one at the given index. Return the child Nod
 Node parentNode.addChildAtIndex(childNode, index)
 ```
 
+### Set the index of a child
+
+Sets the index for the node among its siblings to the given value. Return the node itself.
+
+```js
+Node node.setIndex(index)
+```
+
 ### Get the node path
 
 Get the array of Nodes representing the path from the root to this Node (inclusive).
