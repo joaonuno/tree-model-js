@@ -79,6 +79,24 @@ module.exports = (function () {
     return addChild(this, child, index);
   };
 
+  Node.prototype.setIndex = function (index) {
+    if (this.isRoot()) {
+      throw new Error('Node is a root.');
+    }
+    if (index < 0 || index >= this.parent.children.length) {
+      throw new Error('Invalid index.');
+    }
+
+    var oldIndex = this.parent.children.indexOf(this);
+
+    this.parent.children.splice(index, 0, this.parent.children.splice(oldIndex, 1)[0]);
+
+    this.parent.model[this.parent.config.childrenPropertyName]
+    .splice(index, 0, this.parent.model[this.parent.config.childrenPropertyName].splice(oldIndex, 1)[0]);
+
+    return this;
+  };
+
   function addChild(self, child, insertIndex) {
     var index;
 

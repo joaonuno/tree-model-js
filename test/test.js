@@ -186,6 +186,67 @@ describe('TreeModel', function () {
       });
     });
 
+    describe('setIndex()', function () {
+      var root;
+
+      beforeEach(function () {
+        root = treeModel.parse({id: 1, children: [{id: 11}, {id: 12}, {id:13}]});
+        console.log(root);
+      });
+
+      it('should set the index of this among its parent\'s children', function () {
+        var child, i;
+        child = root.children[0];
+        for (i = 0; i < root.children.length; i++) {
+          child.setIndex(i);
+          assert.equal(root.children.indexOf(child), i);
+        }
+      });
+
+      it('should set the index of this.model among its parent\'s model.children', function () {
+        var child, i;
+        child = root.children[0];
+        for (i = 0; i < root.children.length; i++) {
+          child.setIndex(i);
+          assert.equal(root.model[child.parent.config.childrenPropertyName].indexOf(child.model), i);
+        }
+      });
+      it('keeps the order of all other nodes', function () {
+        var child, oldOrder, i, j, k, l;
+        child = root.children[0];
+        for (i = 0; i < root.children.length; i++) {
+          oldOrder = [];
+          for (j = 0; j < root.children.length; j++) {
+            if (root.children[j] !== child) {
+              oldOrder.push(root.children[j]);
+            }
+          }
+
+          child.setIndex(i);
+          for (k = 0; k < root.children.length; k++) {
+            for (l = 0; l < root.children.length; l++) {
+              if (root.children[k] !== child && root.children[l] !== child) {
+                assert.equal(k < l, oldOrder.indexOf(root.children[k]) < oldOrder.indexOf(root.children[l]));
+              }
+            }
+          }
+        }
+      });
+      it('should return itself', function () {
+        var child = root.children[0];
+        assert.equal(child.setIndex(1), child);
+      });
+      it('should throw an error when node is a root', function () {
+        assert.throws(function () {root.setIndex(0);}, Error, 'Node is a root.');
+      });
+      it('should throw an error when setting to a negative index', function () {
+        assert.throws(function () {root.children[0].setIndex(-1);}, Error, 'Invalid index.');
+      });
+      it('should throw an error when setting to a too high index', function () {
+        assert.throws(function () {root.children[0].setIndex(root.children.length);}, Error, 'Invalid index.');
+      });
+    });
+
     describe('getPath()', function () {
       var root;
 
