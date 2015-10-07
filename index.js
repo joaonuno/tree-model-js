@@ -85,8 +85,12 @@ module.exports = (function () {
     }
 
     if (this.isRoot()) {
-      throw new Error('Node is a root.');
+      if (index === 0) {
+        return this;
+      }
+      throw new Error('Invalid index.');
     }
+
     if (index < 0 || index >= this.parent.children.length) {
       throw new Error('Invalid index.');
     }
@@ -116,9 +120,9 @@ module.exports = (function () {
     if (hasComparatorFunction(self)) {
       // Find the index to insert the child
       index = findInsertIndex(
-      self.config.modelComparatorFn,
-      self.model[self.config.childrenPropertyName],
-      child.model);
+          self.config.modelComparatorFn,
+          self.model[self.config.childrenPropertyName],
+          child.model);
 
       // Add to the model children
       self.model[self.config.childrenPropertyName].splice(index, 0, child.model);
@@ -149,6 +153,13 @@ module.exports = (function () {
       }
     })(this);
     return path;
+  };
+
+  Node.prototype.getIndex = function () {
+    if (this.isRoot()) {
+      return 0;
+    }
+    return this.parent.children.indexOf(this);
   };
 
   /**

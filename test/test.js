@@ -193,21 +193,13 @@ describe('TreeModel', function () {
         root = treeModel.parse({id: 1, children: [{id: 11}, {id: 12}, {id:13}]});
       });
 
-      it('should set the index of this among its parent\'s children', function () {
+      it('should set the index of the node among its siblings', function () {
         var child, i;
         child = root.children[0];
         for (i = 0; i < root.children.length; i++) {
-          child.setIndex(i);
-          assert.equal(root.children.indexOf(child), i);
-        }
-      });
-
-      it('should set the index of this.model among its parent\'s model.children', function () {
-        var child, i;
-        child = root.children[0];
-        for (i = 0; i < root.children.length; i++) {
-          child.setIndex(i);
-          assert.equal(root.model[child.parent.config.childrenPropertyName].indexOf(child.model), i);
+          child.SetIndex(i);
+          assert.equal(child.getIndex(), i);
+          assert.equal(root.model[child.config.childrenPropertyName].indexOf(child.model), i);
         }
       });
 
@@ -238,8 +230,12 @@ describe('TreeModel', function () {
         assert.equal(child.setIndex(1), child);
       });
 
-      it('should throw an error when node is a root', function () {
-        assert.throws(function () {root.setIndex(0);}, Error, 'Node is a root.');
+      it('should throw an error when node is a root and the index is not zero', function () {
+        assert.throws(function () {root.setIndex(1);}, Error, 'Invalid index.');
+      });
+
+      it('should allow to set the root node index to zero', function () {
+        assert.strictEqual(root.setIndex(0), root);
       });
 
       it('should throw an error when setting to a negative index', function () {
@@ -750,7 +746,7 @@ describe('TreeModel', function () {
     });
 
     describe('setIndex()', function () {
-      it('should throw an error when adding child at index but a comparator was provided', function () {
+      it('should throw an error when setting a node index but a comparator was provided', function () {
         var root, child;
 
         root = treeModel.parse({id: 1, deps: [{id: 12}, {id: 11}]});
