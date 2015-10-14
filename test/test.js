@@ -197,7 +197,7 @@ describe('TreeModel', function () {
         var child, i;
         child = root.children[0];
         for (i = 0; i < root.children.length; i++) {
-          child.SetIndex(i);
+          child.setIndex(i);
           assert.equal(child.getIndex(), i);
           assert.equal(root.model[child.config.childrenPropertyName].indexOf(child.model), i);
         }
