@@ -21,13 +21,13 @@
     "dist": "mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js"
   },
   "devDependencies": {
-    "mocha": "2.3.3",
-    "sinon": "1.17.1",
-    "chai": "3.3.0",
-    "browserify": "11.2.0",
-    "uglify-js": "2.4.24",
-    "jshint": "2.8.0",
-    "jscs": "2.2.1"
+    "mocha": "3.1.2",
+    "sinon": "1.17.6",
+    "chai": "3.5.0",
+    "browserify": "13.1.1",
+    "uglify-js": "2.7.4",
+    "jshint": "2.9.4",
+    "jscs": "3.0.7"
   },
   "dependencies": {
     "mergesort": "0.0.1",

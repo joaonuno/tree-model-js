@@ -6,7 +6,7 @@ sinon = require('sinon');
 spy = sinon.spy;
 TreeModel = require('..');
 assert = chai.assert;
-chai.Assertion.includeStack = true;
+chai.config.includeStack = true;
 
 describe('TreeModel', function () {
   'use strict';
