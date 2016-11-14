@@ -18,7 +18,7 @@
   "scripts": {
     "test": "mocha",
     "lint": "jshint index.js test/test.js && jscs index.js test/test.js",
-    "preversion": "test && lint",
+    "preversion": "npm test && npm run lint",
     "postversion": "git push && git push --tags",
     "dist": "mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js"
   },
