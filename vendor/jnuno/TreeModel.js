@@ -23,6 +23,18 @@ module.exports = (function () {
     this.config.modelComparatorFn = config.modelComparatorFn;
   }
 
+  function addChildToNode(node, child) {
+    child.parent = node;
+    node.children.push(child);
+    return child;
+  }
+
+  function Node(config, model) {
+    this.config = config;
+    this.model = model;
+    this.children = [];
+  }
+
   TreeModel.prototype.parse = function (model) {
     var i, childCount, node;
 
@@ -44,20 +56,8 @@ module.exports = (function () {
     return node;
   };
 
-  function addChildToNode(node, child) {
-    child.parent = node;
-    node.children.push(child);
-    return child;
-  }
-
   function hasComparatorFunction(node) {
     return typeof node.config.modelComparatorFn === 'function';
-  }
-
-  function Node(config, model) {
-    this.config = config;
-    this.model = model;
-    this.children = [];
   }
 
   Node.prototype.isRoot = function () {
@@ -66,44 +66,6 @@ module.exports = (function () {
 
   Node.prototype.hasChildren = function () {
     return this.children.length > 0;
-  };
-
-  Node.prototype.addChild = function (child) {
-    return addChild(this, child);
-  };
-
-  Node.prototype.addChildAtIndex = function (child, index) {
-    if (hasComparatorFunction(this)) {
-      throw new Error('Cannot add child at index when using a comparator function.');
-    }
-
-    return addChild(this, child, index);
-  };
-
-  Node.prototype.setIndex = function (index) {
-    if (hasComparatorFunction(this)) {
-      throw new Error('Cannot set node index when using a comparator function.');
-    }
-
-    if (this.isRoot()) {
-      if (index === 0) {
-        return this;
-      }
-      throw new Error('Invalid index.');
-    }
-
-    if (index < 0 || index >= this.parent.children.length) {
-      throw new Error('Invalid index.');
-    }
-
-    var oldIndex = this.parent.children.indexOf(this);
-
-    this.parent.children.splice(index, 0, this.parent.children.splice(oldIndex, 1)[0]);
-
-    this.parent.model[this.parent.config.childrenPropertyName]
-    .splice(index, 0, this.parent.model[this.parent.config.childrenPropertyName].splice(oldIndex, 1)[0]);
-
-    return this;
   };
 
   function addChild(self, child, insertIndex) {
@@ -144,6 +106,44 @@ module.exports = (function () {
     }
     return child;
   }
+
+  Node.prototype.addChild = function (child) {
+    return addChild(this, child);
+  };
+
+  Node.prototype.addChildAtIndex = function (child, index) {
+    if (hasComparatorFunction(this)) {
+      throw new Error('Cannot add child at index when using a comparator function.');
+    }
+
+    return addChild(this, child, index);
+  };
+
+  Node.prototype.setIndex = function (index) {
+    if (hasComparatorFunction(this)) {
+      throw new Error('Cannot set node index when using a comparator function.');
+    }
+
+    if (this.isRoot()) {
+      if (index === 0) {
+        return this;
+      }
+      throw new Error('Invalid index.');
+    }
+
+    if (index < 0 || index >= this.parent.children.length) {
+      throw new Error('Invalid index.');
+    }
+
+    var oldIndex = this.parent.children.indexOf(this);
+
+    this.parent.children.splice(index, 0, this.parent.children.splice(oldIndex, 1)[0]);
+
+    this.parent.model[this.parent.config.childrenPropertyName]
+    .splice(index, 0, this.parent.model[this.parent.config.childrenPropertyName].splice(oldIndex, 1)[0]);
+
+    return this;
+  };
 
   Node.prototype.getPath = function () {
     var path = [];
