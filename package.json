@@ -16,20 +16,23 @@
   "author": "João Nuno Silva <jnss81@gmail.com> (http://jnuno.com)",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "istanbul cover _mocha",
+    "cov": "cat ./coverage/lcov.info | coveralls",
     "lint": "jshint index.js test/test.js && jscs index.js test/test.js",
     "preversion": "npm test && npm run lint",
     "postversion": "git push && git push --tags",
     "dist": "mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js"
   },
   "devDependencies": {
+    "browserify": "13.1.1",
+    "chai": "3.5.0",
+    "coveralls": "2.11.15",
+    "istanbul": "0.4.5",
+    "jscs": "3.0.7",
+    "jshint": "2.9.4",
     "mocha": "3.1.2",
     "sinon": "1.17.6",
-    "chai": "3.5.0",
-    "browserify": "13.1.1",
-    "uglify-js": "2.7.4",
-    "jshint": "2.9.4",
-    "jscs": "3.0.7"
+    "uglify-js": "2.7.4"
   },
   "dependencies": {
     "mergesort": "0.0.1",

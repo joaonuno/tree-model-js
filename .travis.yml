@@ -7,3 +7,5 @@ node_js:
   - "6"
   - "node"
   - "iojs"
+after_success:
+  - npm run cov
