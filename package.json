@@ -19,9 +19,9 @@
     "test": "istanbul cover _mocha",
     "cov": "cat ./coverage/lcov.info | coveralls",
     "lint": "jshint index.js test/test.js && jscs index.js test/test.js",
-    "preversion": "npm test && npm run lint",
-    "postversion": "git push && git push --tags",
-    "dist": "mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js"
+    "preversion": "npm test && npm run lint && npm run dist && git add dist/TreeModel*.js",
+    "postversion": "git push && git push --tags && echo 'Dont forget to publish to npm...'",
+    "dist": "rm -rf dist && mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js"
   },
   "devDependencies": {
     "browserify": "13.1.1",
