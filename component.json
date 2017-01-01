@@ -1,0 +1,20 @@
+{
+  "name": "tree-model",
+  "repo": "koellcode/tree-model-js",
+  "description": "Manipulate and traverse tree-like structures in javascript.",
+  "version": "0.4.1",
+  "keywords": [
+    "tree",
+    "hierarchy",
+    "browser",
+    "node",
+    "requirejs"
+  ],
+  "dependencies": {
+    "koellcode/merge-sort-js": "*",
+    "koellcode/find-insert-index-js": "*"
+  },
+  "scripts": ["index.js"],
+  "main": "index.js",
+  "license": "MIT"
+}
