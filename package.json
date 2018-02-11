@@ -16,7 +16,7 @@
   "author": "João Nuno Silva <jnss81@gmail.com> (http://jnuno.com)",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover _mocha",
+    "test": "istanbul cover _mocha && dtslint types",
     "cov": "cat ./coverage/lcov.info | coveralls",
     "lint": "jshint index.js test/test.js && jscs index.js test/test.js",
     "preversion": "npm test && npm run lint && npm run dist && git add dist/TreeModel*.js",
