@@ -19,6 +19,11 @@ var TreeModel = require('tree-model'),
     root = tree.parse({name: 'a', children: [{name: 'b'}]});
 ```
 
+#### TypeScript
+Type definitions are already bundled with the package, which should just work with npm install.
+
+You can maually find the definition files in the `types` folder.
+
 ### Browser
 
 [Visit TreeModel website](http://jnuno.com/tree-model-js) to download browser-ready bundles.
@@ -169,3 +174,12 @@ This will check both source and tests for code correctness and style compliance.
 ### Running Tests
 
 Run `npm test`
+
+### Type definitions
+
+To modify the type definitions, look inside the `types` folder. 
+`index.d.ts` contains the definition and `tree-model-tests.ts` contains type tests.
+
+To verify changes:
+
+Run `npm run dtslint`.

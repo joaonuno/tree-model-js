@@ -16,17 +16,19 @@
   "author": "João Nuno Silva <jnss81@gmail.com> (http://jnuno.com)",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover _mocha",
+    "test": "istanbul cover _mocha && dtslint types",
     "cov": "cat ./coverage/lcov.info | coveralls",
     "lint": "jshint index.js test/test.js && jscs index.js test/test.js",
     "preversion": "npm test && npm run lint && npm run dist && git add dist/TreeModel*.js",
     "postversion": "git push && git push --tags && echo 'Dont forget to publish to npm...'",
-    "dist": "rm -rf dist && mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js"
+    "dist": "rm -rf dist && mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js",
+    "dtslint": "dtslint types"
   },
   "devDependencies": {
     "browserify": "13.1.1",
     "chai": "3.5.0",
     "coveralls": "2.11.15",
+    "dtslint": "^0.2.0",
     "istanbul": "0.4.5",
     "jscs": "3.0.7",
     "jshint": "2.9.4",
@@ -37,5 +39,6 @@
   "dependencies": {
     "mergesort": "0.0.1",
     "find-insert-index": "0.0.1"
-  }
+  },
+  "types": "types"
 }
