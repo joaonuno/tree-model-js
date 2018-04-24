@@ -5,14 +5,14 @@
 export = TreeModel;
 
 declare class TreeModel {
-    constructor(config?: TreeModelMisc.Config);
+    constructor(config?: TreeModel.Config);
 
-    private config: TreeModelMisc.Config;
+    private config: TreeModel.Config;
 
-    parse(model: TreeModelMisc.Model): TreeModelMisc.Node;
+    parse(model: TreeModel.Model): TreeModel.Node;
 }
 
-declare namespace TreeModelMisc {
+declare namespace TreeModel {
     class Node {
         constructor(config: any, model: Model);
 
