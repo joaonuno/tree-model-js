@@ -1,8 +1,12 @@
 import TreeModel = require("tree-model");
 
+interface TestModel {
+    name: string;
+}
+
 const tree = new TreeModel({});
 
-const root = tree.parse({ name: 'a', children: [{ name: 'b' }, { name: 'c' }] });
+const root = tree.parse<TestModel>({ name: 'a', children: [{ name: 'b' }, { name: 'c' }] });
 
 // $ExpectType boolean
 root.isRoot();
@@ -21,13 +25,13 @@ root.hasChildren();
         type Node = typeof nodeB;
 
         root.addChild({}); // $ExpectError
-        root.addChild(nodeC); // $ExpectType Node
+        root.addChild(nodeC); // $ExpectType Node<TestModel>
 
         root.addChildAtIndex(nodeC); // $ExpectError
-        root.addChildAtIndex(nodeC, 0); // $ExpectType Node
+        root.addChildAtIndex(nodeC, 0); // $ExpectType Node<TestModel>
 
         nodeB.setIndex("first"); // $ExpectError
-        nodeB.setIndex(0); // $ExpectType Node
+        nodeB.setIndex(0); // $ExpectType Node<TestModel>
         const arrPath: Node[] = nodeB.getPath();
         const nodeIndex: number = nodeB.getIndex();
 
@@ -75,6 +79,6 @@ root.hasChildren();
         }
 
         nodeC.drop(nodeC); // $ExpectError
-        nodeC.drop(); // $ExpectType Node
+        nodeC.drop(); // $ExpectType Node<TestModel>
     }
 }
