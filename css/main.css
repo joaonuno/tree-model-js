@@ -40,3 +40,21 @@ a.twitter {
 a.twitter > img {
     margin-right: 3px;
 }
+
+a.github {
+    border: 1px solid #08c;
+    margin-left: 10px;
+    font-size: 13px;
+    background-color: #fff;
+    padding: 3px 7px;
+    border-radius: 10px;
+    text-decoration: none;
+    position: relative;
+    top: -6px;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+}
+
+a.github:hover {
+    background-color: #e2f5ff;
+}
