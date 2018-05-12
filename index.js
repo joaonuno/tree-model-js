@@ -82,9 +82,9 @@ module.exports = (function () {
     if (hasComparatorFunction(self)) {
       // Find the index to insert the child
       index = findInsertIndex(
-          self.config.modelComparatorFn,
-          self.model[self.config.childrenPropertyName],
-          child.model);
+        self.config.modelComparatorFn,
+        self.model[self.config.childrenPropertyName],
+        child.model);
 
       // Add to the model children
       self.model[self.config.childrenPropertyName].splice(index, 0, child.model);
@@ -139,7 +139,7 @@ module.exports = (function () {
     this.parent.children.splice(index, 0, this.parent.children.splice(oldIndex, 1)[0]);
 
     this.parent.model[this.parent.config.childrenPropertyName]
-    .splice(index, 0, this.parent.model[this.parent.config.childrenPropertyName].splice(oldIndex, 1)[0]);
+      .splice(index, 0, this.parent.model[this.parent.config.childrenPropertyName].splice(oldIndex, 1)[0]);
 
     return this;
   };

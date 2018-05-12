@@ -2,10 +2,7 @@ language: node_js
 before_install:
   - npm install -g npm
 node_js:
-  - "4"
-  - "5"
-  - "6"
   - "node"
-  - "iojs"
+  - "lts/*"
 after_success:
   - npm run cov

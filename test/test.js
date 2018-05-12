@@ -1,9 +1,8 @@
 /* global describe, it, beforeEach */
 
-var chai, assert, sinon, spy, TreeModel;
+var chai, assert, sinon, TreeModel;
 chai = require('chai');
 sinon = require('sinon');
-spy = sinon.spy;
 TreeModel = require('..');
 assert = chai.assert;
 chai.config.includeStack = true;
@@ -752,8 +751,10 @@ describe('TreeModel', function () {
         root = treeModel.parse({id: 1, deps: [{id: 12}, {id: 11}]});
         child = root.children[0];
 
-        assert.throws(function () {child.setIndex(0);}, Error,
-        'Cannot set node index when using a comparator function.');
+        assert.throws(
+          function () {child.setIndex(0);},
+          Error,
+          'Cannot set node index when using a comparator function.');
       });
     });
 

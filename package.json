@@ -16,25 +16,25 @@
   "author": "João Nuno Silva <jnss81@gmail.com> (http://jnuno.com)",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover _mocha && dtslint types",
+    "test": "istanbul cover _mocha",
     "cov": "cat ./coverage/lcov.info | coveralls",
-    "lint": "jshint index.js test/test.js && jscs index.js test/test.js",
+    "lint": "jshint index.js test/test.js && eslint index.js test/test.js && npm run dtslint",
     "preversion": "npm test && npm run lint && npm run dist && git add dist/TreeModel*.js",
     "postversion": "git push && git push --tags && echo 'Dont forget to publish to npm...'",
     "dist": "rm -rf dist && mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js",
     "dtslint": "dtslint types"
   },
   "devDependencies": {
-    "browserify": "13.1.1",
-    "chai": "3.5.0",
-    "coveralls": "2.11.15",
-    "dtslint": "^0.2.0",
-    "istanbul": "0.4.5",
-    "jscs": "3.0.7",
-    "jshint": "2.9.4",
-    "mocha": "3.1.2",
-    "sinon": "1.17.6",
-    "uglify-js": "2.7.4"
+    "browserify": "^16",
+    "chai": "^4",
+    "coveralls": "^3",
+    "dtslint": "0.3.0",
+    "eslint": "^4",
+    "istanbul": "^0",
+    "jshint": "^2",
+    "mocha": "^5",
+    "sinon": "^5",
+    "uglify-js": "^3"
   },
   "dependencies": {
     "mergesort": "0.0.1",
