@@ -283,7 +283,7 @@ describe('TreeModel', function () {
     });
 
     describe('traversal', function () {
-      var root, spy121, spy12;
+      var root, spy121, spy12, spyOnNodeProcessed;
 
       function callback121(node) {
         if (node.model.id === 121) {
@@ -296,6 +296,8 @@ describe('TreeModel', function () {
           return false;
         }
       }
+
+      function emptyCallback() {}
 
       beforeEach(function () {
         root = treeModel.parse({
@@ -314,6 +316,8 @@ describe('TreeModel', function () {
 
         spy121 = sinon.spy(callback121);
         spy12 = sinon.spy(callback12);
+        spyOnNodeProcessed = sinon.spy(emptyCallback);
+
       });
 
       describe('walk depthFirstPreOrder by default', function () {
@@ -326,6 +330,20 @@ describe('TreeModel', function () {
           assert(spy121.getCall(2).calledWithExactly(root.first(idEq(111))));
           assert(spy121.getCall(3).calledWithExactly(root.first(idEq(12))));
           assert(spy121.getCall(4).calledWithExactly(root.first(idEq(121))));
+        });
+      });
+
+      describe('calls noNodeProcessed with depthFirstPreOrder', function () {
+        it('should be called in proper order', function () {
+          root.walk(emptyCallback, this, spyOnNodeProcessed);
+          assert.strictEqual(spyOnNodeProcessed.callCount, 6);
+          assert(spyOnNodeProcessed.alwaysCalledOn(this));
+          assert(spyOnNodeProcessed.getCall(0).calledWithExactly(root.first(idEq(111))));
+          assert(spyOnNodeProcessed.getCall(1).calledWithExactly(root.first(idEq(11))));
+          assert(spyOnNodeProcessed.getCall(2).calledWithExactly(root.first(idEq(121))));
+          assert(spyOnNodeProcessed.getCall(3).calledWithExactly(root.first(idEq(122))));
+          assert(spyOnNodeProcessed.getCall(4).calledWithExactly(root.first(idEq(12))));
+          assert(spyOnNodeProcessed.getCall(5).calledWithExactly(root.first(idEq(1))));
         });
       });
 

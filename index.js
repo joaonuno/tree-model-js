@@ -188,10 +188,21 @@ module.exports = (function () {
         args.options = arguments[0];
         args.fn = arguments[1];
       }
+    } else if (arguments.length === 3) {
+      if (typeof arguments[0] === 'function') {
+        args.fn = arguments[0];
+        args.ctx = arguments[1];
+        args.onNodeProcessedFn = arguments[2];
+      } else {
+        args.options = arguments[0];
+        args.fn = arguments[1];
+        args.ctx = arguments[2];
+      }
     } else {
       args.options = arguments[0];
       args.fn = arguments[1];
       args.ctx = arguments[2];
+      args.onNodeProcessedFn = arguments[3];
     }
     args.options = args.options || {};
     if (!args.options.strategy) {
@@ -206,18 +217,27 @@ module.exports = (function () {
   Node.prototype.walk = function () {
     var args;
     args = parseArgs.apply(this, arguments);
-    walkStrategies[args.options.strategy].call(this, args.fn, args.ctx);
+    if (args.options.strategy === 'pre') {
+      walkStrategies.pre.call(this, args.fn, args.ctx, args.onNodeProcessedFn);
+    } else {
+      walkStrategies[args.options.strategy].call(this, args.fn, args.ctx);
+    }
   };
 
-  walkStrategies.pre = function depthFirstPreOrder(callback, context) {
+  walkStrategies.pre = function depthFirstPreOrder(callback, context, onNodeProcessed) {
     var i, childCount, keepGoing;
     keepGoing = callback.call(context, this);
     for (i = 0, childCount = this.children.length; i < childCount; i++) {
       if (keepGoing === false) {
         return false;
       }
-      keepGoing = depthFirstPreOrder.call(this.children[i], callback, context);
+      keepGoing = depthFirstPreOrder.call(this.children[i], callback, context, onNodeProcessed);
     }
+
+    if (typeof onNodeProcessed === 'function') {
+      onNodeProcessed.call(context, this);
+    }
+
     return keepGoing;
   };
 
