@@ -32,7 +32,7 @@ You can maually find the definition files in the `types` folder.
 
 If you have any doubt using this library please post a question on [stackoverflow](http://stackoverflow.com/questions/ask?tags=treemodel) tagged with `treemodel`.
 
-## API Reference
+## JavaScript API Reference
 
 ### Create a new TreeModel
 
@@ -158,6 +158,26 @@ node.walk([options], action, [context])
 * `{strategy: 'breadth'}` - Breadth-first.
 
 These functions can also take, as the last parameter, the *context* on which the action will be called.
+
+## Typescript Refrence
+
+You can maually find the definition files in the `types` folder. A quick summary, is rougly as follows:
+
+```ts
+import * as TreeModel from "tree-model";
+
+interface TestModel {
+    name: string;
+}
+const tree = new TreeModel({});
+const root = tree.parse<TestModel>({ name: 'a', children: [{ name: 'b' }, { name: 'c' }] });
+```
+It is also possible to type the input object (to parse) itself, instead of providing the generic type to `.parse`:
+
+```ts
+const data : TreeModel.Model<TestModel> = { name: 'a', children: [{ name: 'b' }, { name: 'c' }] };
+const root = tree.parse(data);
+```
 
 ## Contributing
 
