@@ -194,9 +194,7 @@ module.exports = (function () {
       args.ctx = arguments[2];
     }
     args.options = args.options || {};
-    if (!args.options.strategy) {
-      args.options.strategy = 'pre';
-    }
+    args.options.strategy = 'breadth';
     if (!walkStrategies[args.options.strategy]) {
       throw new Error('Unknown tree walk strategy. Valid strategies are \'pre\' [default], \'post\' and \'breadth\'.');
     }
@@ -207,30 +205,6 @@ module.exports = (function () {
     var args;
     args = parseArgs.apply(this, arguments);
     walkStrategies[args.options.strategy].call(this, args.fn, args.ctx);
-  };
-
-  walkStrategies.pre = function depthFirstPreOrder(callback, context) {
-    var i, childCount, keepGoing;
-    keepGoing = callback.call(context, this);
-    for (i = 0, childCount = this.children.length; i < childCount; i++) {
-      if (keepGoing === false) {
-        return false;
-      }
-      keepGoing = depthFirstPreOrder.call(this.children[i], callback, context);
-    }
-    return keepGoing;
-  };
-
-  walkStrategies.post = function depthFirstPostOrder(callback, context) {
-    var i, childCount, keepGoing;
-    for (i = 0, childCount = this.children.length; i < childCount; i++) {
-      keepGoing = depthFirstPostOrder.call(this.children[i], callback, context);
-      if (keepGoing === false) {
-        return false;
-      }
-    }
-    keepGoing = callback.call(context, this);
-    return keepGoing;
   };
 
   walkStrategies.breadth = function breadthFirst(callback, context) {
@@ -244,7 +218,7 @@ module.exports = (function () {
       for (i = 0, childCount = node.children.length; i < childCount; i++) {
         queue.push(node.children[i]);
       }
-      if (callback.call(context, node) !== false) {
+      if (callback.call(context, node, queue) !== false) {
         processQueue();
       }
     })();
