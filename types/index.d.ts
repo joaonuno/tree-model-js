@@ -35,6 +35,8 @@ declare namespace TreeModel {
 
         drop(): Node<T>;
 
+        model: Model<T>;
+
         [propName: string]: any;
     }
 
