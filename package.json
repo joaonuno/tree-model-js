@@ -31,7 +31,7 @@
     "dtslint": "0.3.0",
     "eslint": "^4",
     "istanbul": "^0",
-    "jshint": "^2",
+    "jshint": "^2.11.1",
     "mocha": "^5",
     "sinon": "^5",
     "uglify-js": "^3"
