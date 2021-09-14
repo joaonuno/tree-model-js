@@ -1,10 +1,11 @@
 /* global describe, it, beforeEach */
 
-var chai, assert, sinon, TreeModel;
-chai = require('chai');
-sinon = require('sinon');
-TreeModel = require('..');
-assert = chai.assert;
+import chai from 'chai';
+import sinon from 'sinon';
+import { TreeModel } from '../index.mjs';
+
+const { assert } = chai;
+
 chai.config.includeStack = true;
 
 describe('TreeModel', function () {
