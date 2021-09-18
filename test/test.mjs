@@ -26,29 +26,38 @@ describe('TreeModel', function () {
 
     describe('parse()', function () {
       it('should throw an error when model is a number (not an object)', function () {
-        assert.throws(treeModel.parse.bind(treeModel, 1), TypeError, 'Model must be of type object.');
+        assert.throws(
+          treeModel.parse.bind(treeModel, 1),
+          TypeError,
+          'Model must be of type object.'
+        );
       });
 
       it('should throw an error when model is a string (not an object)', function () {
-        assert.throws(treeModel.parse.bind(treeModel, 'string'), TypeError, 'Model must be of type object.');
+        assert.throws(
+          treeModel.parse.bind(treeModel, 'string'),
+          TypeError,
+          'Model must be of type object.'
+        );
       });
 
       it('should throw an error when some child in the model is not an object', function () {
         assert.throws(
-          treeModel.parse.bind(treeModel, {children: ['string']}),
+          treeModel.parse.bind(treeModel, { children: ['string'] }),
           TypeError,
-          'Model must be of type object.');
+          'Model must be of type object.'
+        );
       });
 
       it('should create a root node when given a model without children', function () {
         var root;
 
-        root = treeModel.parse({id: 1});
+        root = treeModel.parse({ id: 1 });
 
         assert.isUndefined(root.parent);
         assert.isArray(root.children);
         assert.lengthOf(root.children, 0);
-        assert.deepEqual(root.model, {id: 1});
+        assert.deepEqual(root.model, { id: 1 });
       });
 
       it('should create a root and the respective children when given a model with children', function () {
@@ -59,25 +68,25 @@ describe('TreeModel', function () {
           children: [
             {
               id: 11,
-              children: [{id: 111}]
+              children: [{ id: 111 }],
             },
             {
               id: 12,
               children: [
-                {id: 121},
-                {id: 122},
-                {id: 123},
-                {id: 124},
-                {id: 125},
-                {id: 126},
-                {id: 127},
-                {id: 128},
-                {id: 129},
-                {id: 1210},
-                {id: 1211}
-              ]
-            }
-          ]
+                { id: 121 },
+                { id: 122 },
+                { id: 123 },
+                { id: 124 },
+                { id: 125 },
+                { id: 126 },
+                { id: 127 },
+                { id: 128 },
+                { id: 129 },
+                { id: 1210 },
+                { id: 1211 },
+              ],
+            },
+          ],
         });
 
         assert.isUndefined(root.parent);
@@ -88,25 +97,25 @@ describe('TreeModel', function () {
           children: [
             {
               id: 11,
-              children: [{id: 111}]
+              children: [{ id: 111 }],
             },
             {
               id: 12,
               children: [
-                {id: 121},
-                {id: 122},
-                {id: 123},
-                {id: 124},
-                {id: 125},
-                {id: 126},
-                {id: 127},
-                {id: 128},
-                {id: 129},
-                {id: 1210},
-                {id: 1211}
-              ]
-            }
-          ]
+                { id: 121 },
+                { id: 122 },
+                { id: 123 },
+                { id: 124 },
+                { id: 125 },
+                { id: 126 },
+                { id: 127 },
+                { id: 128 },
+                { id: 129 },
+                { id: 1210 },
+                { id: 1211 },
+              ],
+            },
+          ],
         });
 
         assert.deepEqual(root, root.children[0].parent);
@@ -118,18 +127,18 @@ describe('TreeModel', function () {
         assert.deepEqual(node12.model, {
           id: 12,
           children: [
-            {id: 121},
-            {id: 122},
-            {id: 123},
-            {id: 124},
-            {id: 125},
-            {id: 126},
-            {id: 127},
-            {id: 128},
-            {id: 129},
-            {id: 1210},
-            {id: 1211}
-          ]
+            { id: 121 },
+            { id: 122 },
+            { id: 123 },
+            { id: 124 },
+            { id: 125 },
+            { id: 126 },
+            { id: 127 },
+            { id: 128 },
+            { id: 129 },
+            { id: 1210 },
+            { id: 1211 },
+          ],
         });
 
         assert.deepEqual(node12, node12.children[0].parent);
@@ -141,17 +150,21 @@ describe('TreeModel', function () {
       var root;
 
       beforeEach(function () {
-        root = treeModel.parse({id: 1, children: [{id: 11}, {id: 12}]});
+        root = treeModel.parse({ id: 1, children: [{ id: 11 }, { id: 12 }] });
       });
 
       it('should add child to the end', function () {
-        root.addChild(treeModel.parse({id: 13}));
-        root.addChild(treeModel.parse({id: 10}));
-        assert.deepEqual(root.model.children, [{id: 11}, {id: 12}, {id: 13}, {id: 10}]);
+        root.addChild(treeModel.parse({ id: 13 }));
+        root.addChild(treeModel.parse({ id: 10 }));
+        assert.deepEqual(root.model.children, [{ id: 11 }, { id: 12 }, { id: 13 }, { id: 10 }]);
       });
 
       it('should throw an error when child is not a Node', function () {
-        assert.throws(root.addChild.bind(root, {children: []}), TypeError, 'Child must be of type Node.');
+        assert.throws(
+          root.addChild.bind(root, { children: [] }),
+          TypeError,
+          'Child must be of type Node.'
+        );
       });
 
       it('should add child at index', function () {
@@ -190,7 +203,10 @@ describe('TreeModel', function () {
       var root;
 
       beforeEach(function () {
-        root = treeModel.parse({id: 1, children: [{id: 11}, {id: 12}, {id:13}]});
+        root = treeModel.parse({
+          id: 1,
+          children: [{ id: 11 }, { id: 12 }, { id: 13 }],
+        });
       });
 
       it('should set the index of the node among its siblings', function () {
@@ -218,7 +234,10 @@ describe('TreeModel', function () {
           for (k = 0; k < root.children.length; k++) {
             for (l = 0; l < root.children.length; l++) {
               if (root.children[k] !== child && root.children[l] !== child) {
-                assert.equal(k < l, oldOrder.indexOf(root.children[k]) < oldOrder.indexOf(root.children[l]));
+                assert.equal(
+                  k < l,
+                  oldOrder.indexOf(root.children[k]) < oldOrder.indexOf(root.children[l])
+                );
               }
             }
           }
@@ -231,7 +250,13 @@ describe('TreeModel', function () {
       });
 
       it('should throw an error when node is a root and the index is not zero', function () {
-        assert.throws(function () {root.setIndex(1);}, Error, 'Invalid index.');
+        assert.throws(
+          function () {
+            root.setIndex(1);
+          },
+          Error,
+          'Invalid index.'
+        );
       });
 
       it('should allow to set the root node index to zero', function () {
@@ -239,11 +264,23 @@ describe('TreeModel', function () {
       });
 
       it('should throw an error when setting to a negative index', function () {
-        assert.throws(function () {root.children[0].setIndex(-1);}, Error, 'Invalid index.');
+        assert.throws(
+          function () {
+            root.children[0].setIndex(-1);
+          },
+          Error,
+          'Invalid index.'
+        );
       });
 
       it('should throw an error when setting to a too high index', function () {
-        assert.throws(function () {root.children[0].setIndex(root.children.length);}, Error, 'Invalid index.');
+        assert.throws(
+          function () {
+            root.children[0].setIndex(root.children.length);
+          },
+          Error,
+          'Invalid index.'
+        );
       });
     });
 
@@ -256,13 +293,13 @@ describe('TreeModel', function () {
           children: [
             {
               id: 11,
-              children: [{id: 111}]
+              children: [{ id: 111 }],
             },
             {
               id: 12,
-              children: [{id: 121}, {id: 122}]
-            }
-          ]
+              children: [{ id: 121 }, { id: 122 }],
+            },
+          ],
         });
       });
 
@@ -304,13 +341,13 @@ describe('TreeModel', function () {
           children: [
             {
               id: 11,
-              children: [{id: 111}]
+              children: [{ id: 111 }],
             },
             {
               id: 12,
-              children: [{id: 121}, {id: 122}]
-            }
-          ]
+              children: [{ id: 121 }, { id: 122 }],
+            },
+          ],
         });
 
         spy121 = sinon.spy(callback121);
@@ -332,7 +369,7 @@ describe('TreeModel', function () {
 
       describe('walk depthFirstPostOrder', function () {
         it('should traverse the nodes until the callback returns false', function () {
-          root.walk({strategy: 'post'}, spy121, this);
+          root.walk({ strategy: 'post' }, spy121, this);
           assert.strictEqual(spy121.callCount, 3);
           assert(spy121.alwaysCalledOn(this));
           assert(spy121.getCall(0).calledWithExactly(root.first(idEq(111))));
@@ -343,7 +380,7 @@ describe('TreeModel', function () {
 
       describe('walk depthFirstPostOrder (2)', function () {
         it('should traverse the nodes until the callback returns false', function () {
-          root.walk({strategy: 'post'}, spy12, this);
+          root.walk({ strategy: 'post' }, spy12, this);
           assert.strictEqual(spy12.callCount, 5);
           assert(spy12.alwaysCalledOn(this));
           assert(spy12.getCall(0).calledWithExactly(root.first(idEq(111))));
@@ -356,7 +393,7 @@ describe('TreeModel', function () {
 
       describe('walk breadthFirst', function () {
         it('should traverse the nodes until the callback returns false', function () {
-          root.walk({strategy: 'breadth'}, spy121, this);
+          root.walk({ strategy: 'breadth' }, spy121, this);
           assert.strictEqual(spy121.callCount, 5);
           assert(spy121.alwaysCalledOn(this));
           assert(spy121.getCall(0).calledWithExactly(root.first(idEq(1))));
@@ -370,9 +407,10 @@ describe('TreeModel', function () {
       describe('walk using unknown strategy', function () {
         it('should throw an error warning about the strategy', function () {
           assert.throws(
-            root.walk.bind(root, {strategy: 'unknownStrategy'}, callback121, this),
+            root.walk.bind(root, { strategy: 'unknownStrategy' }, callback121, this),
             Error,
-            'Unknown tree walk strategy. Valid strategies are \'pre\' [default], \'post\' and \'breadth\'.');
+            "Unknown tree walk strategy. Valid strategies are 'pre' [default], 'post' and 'breadth'."
+          );
         });
       });
     });
@@ -386,13 +424,13 @@ describe('TreeModel', function () {
           children: [
             {
               id: 11,
-              children: [{id: 111}]
+              children: [{ id: 111 }],
             },
             {
               id: 12,
-              children: [{id: 121}, {id: 122}]
-            }
-          ]
+              children: [{ id: 121 }, { id: 122 }],
+            },
+          ],
         });
       });
 
@@ -448,13 +486,13 @@ describe('TreeModel', function () {
           children: [
             {
               id: 11,
-              children: [{id: 111}]
+              children: [{ id: 111 }],
             },
             {
               id: 12,
-              children: [{id: 121}, {id: 122}]
-            }
-          ]
+              children: [{ id: 121 }, { id: 122 }],
+            },
+          ],
         });
       });
 
@@ -474,7 +512,7 @@ describe('TreeModel', function () {
 
       it('should get the first node with a different strategy when the predicate returns true', function () {
         var first;
-        first = root.first({strategy: 'post'}, function () {
+        first = root.first({ strategy: 'post' }, function () {
           return true;
         });
         assert.equal(first.model.id, 111);
@@ -482,7 +520,7 @@ describe('TreeModel', function () {
 
       it('should get the first node with a different strategy when no predicate is given', function () {
         var first;
-        first = root.first({strategy: 'post'});
+        first = root.first({ strategy: 'post' });
         assert.equal(first.model.id, 111);
       });
     });
@@ -496,13 +534,13 @@ describe('TreeModel', function () {
           children: [
             {
               id: 11,
-              children: [{id: 111}]
+              children: [{ id: 111 }],
             },
             {
               id: 12,
-              children: [{id: 121}, {id: 122}]
-            }
-          ]
+              children: [{ id: 121 }, { id: 122 }],
+            },
+          ],
         });
       });
 
@@ -511,7 +549,10 @@ describe('TreeModel', function () {
       });
 
       it('should give back the dropped node, which no longer be found in the original root', function () {
-        assert.deepEqual(root.first(idEq(11)).drop().model, {id: 11, children: [{id: 111}]});
+        assert.deepEqual(root.first(idEq(11)).drop().model, {
+          id: 11,
+          children: [{ id: 111 }],
+        });
         assert.isUndefined(root.first(idEq(11)));
       });
     });
@@ -525,13 +566,13 @@ describe('TreeModel', function () {
           children: [
             {
               id: 11,
-              children: [{id: 111}]
+              children: [{ id: 111 }],
             },
             {
               id: 12,
-              children: [{id: 121}, {id: 122}]
-            }
-          ]
+              children: [{ id: 121 }, { id: 122 }],
+            },
+          ],
         });
       });
 
@@ -553,7 +594,7 @@ describe('TreeModel', function () {
         childrenPropertyName: 'deps',
         modelComparatorFn: function (a, b) {
           return b.id - a.id;
-        }
+        },
       });
     });
 
@@ -566,31 +607,31 @@ describe('TreeModel', function () {
           deps: [
             {
               id: 11,
-              deps: [{id: 111}]
+              deps: [{ id: 111 }],
             },
             {
               id: 12,
               deps: [
-                {id: 122, stable: 1},
-                {id: 121, stable: 1},
-                {id: 121, stable: 2},
-                {id: 121, stable: 3},
-                {id: 121, stable: 4},
-                {id: 121, stable: 5},
-                {id: 121, stable: 6},
-                {id: 121, stable: 7},
-                {id: 121, stable: 8},
-                {id: 121, stable: 9},
-                {id: 121, stable: 10},
-                {id: 121, stable: 11},
-                {id: 121, stable: 12},
-                {id: 121, stable: 13},
-                {id: 121, stable: 14},
-                {id: 121, stable: 15},
-                {id: 122, stable: 2}
-              ]
-            }
-          ]
+                { id: 122, stable: 1 },
+                { id: 121, stable: 1 },
+                { id: 121, stable: 2 },
+                { id: 121, stable: 3 },
+                { id: 121, stable: 4 },
+                { id: 121, stable: 5 },
+                { id: 121, stable: 6 },
+                { id: 121, stable: 7 },
+                { id: 121, stable: 8 },
+                { id: 121, stable: 9 },
+                { id: 121, stable: 10 },
+                { id: 121, stable: 11 },
+                { id: 121, stable: 12 },
+                { id: 121, stable: 13 },
+                { id: 121, stable: 14 },
+                { id: 121, stable: 15 },
+                { id: 122, stable: 2 },
+              ],
+            },
+          ],
         });
 
         assert.isUndefined(root.parent);
@@ -602,30 +643,30 @@ describe('TreeModel', function () {
             {
               id: 12,
               deps: [
-                {id: 122, stable: 1},
-                {id: 122, stable: 2},
-                {id: 121, stable: 1},
-                {id: 121, stable: 2},
-                {id: 121, stable: 3},
-                {id: 121, stable: 4},
-                {id: 121, stable: 5},
-                {id: 121, stable: 6},
-                {id: 121, stable: 7},
-                {id: 121, stable: 8},
-                {id: 121, stable: 9},
-                {id: 121, stable: 10},
-                {id: 121, stable: 11},
-                {id: 121, stable: 12},
-                {id: 121, stable: 13},
-                {id: 121, stable: 14},
-                {id: 121, stable: 15}
-              ]
+                { id: 122, stable: 1 },
+                { id: 122, stable: 2 },
+                { id: 121, stable: 1 },
+                { id: 121, stable: 2 },
+                { id: 121, stable: 3 },
+                { id: 121, stable: 4 },
+                { id: 121, stable: 5 },
+                { id: 121, stable: 6 },
+                { id: 121, stable: 7 },
+                { id: 121, stable: 8 },
+                { id: 121, stable: 9 },
+                { id: 121, stable: 10 },
+                { id: 121, stable: 11 },
+                { id: 121, stable: 12 },
+                { id: 121, stable: 13 },
+                { id: 121, stable: 14 },
+                { id: 121, stable: 15 },
+              ],
             },
             {
               id: 11,
-              deps: [{id: 111}]
-            }
-          ]
+              deps: [{ id: 111 }],
+            },
+          ],
         });
 
         assert.deepEqual(root, root.children[0].parent);
@@ -637,24 +678,24 @@ describe('TreeModel', function () {
         assert.deepEqual(node12.model, {
           id: 12,
           deps: [
-            {id: 122, stable: 1},
-            {id: 122, stable: 2},
-            {id: 121, stable: 1},
-            {id: 121, stable: 2},
-            {id: 121, stable: 3},
-            {id: 121, stable: 4},
-            {id: 121, stable: 5},
-            {id: 121, stable: 6},
-            {id: 121, stable: 7},
-            {id: 121, stable: 8},
-            {id: 121, stable: 9},
-            {id: 121, stable: 10},
-            {id: 121, stable: 11},
-            {id: 121, stable: 12},
-            {id: 121, stable: 13},
-            {id: 121, stable: 14},
-            {id: 121, stable: 15}
-          ]
+            { id: 122, stable: 1 },
+            { id: 122, stable: 2 },
+            { id: 121, stable: 1 },
+            { id: 121, stable: 2 },
+            { id: 121, stable: 3 },
+            { id: 121, stable: 4 },
+            { id: 121, stable: 5 },
+            { id: 121, stable: 6 },
+            { id: 121, stable: 7 },
+            { id: 121, stable: 8 },
+            { id: 121, stable: 9 },
+            { id: 121, stable: 10 },
+            { id: 121, stable: 11 },
+            { id: 121, stable: 12 },
+            { id: 121, stable: 13 },
+            { id: 121, stable: 14 },
+            { id: 121, stable: 15 },
+          ],
         });
 
         for (i = 0; i < 17; i++) {
@@ -666,66 +707,69 @@ describe('TreeModel', function () {
     describe('addChild()', function () {
       it('should add child respecting the given comparator', function () {
         var root;
-        root = treeModel.parse({id: 1, deps: [
-          {id: 12, stable: 1},
-          {id: 11, stable: 1},
-          {id: 11, stable: 2},
-          {id: 11, stable: 3},
-          {id: 11, stable: 4},
-          {id: 11, stable: 5},
-          {id: 11, stable: 6},
-          {id: 11, stable: 7},
-          {id: 12, stable: 2},
-          {id: 11, stable: 8},
-          {id: 11, stable: 9},
-          {id: 11, stable: 10},
-          {id: 11, stable: 11},
-          {id: 11, stable: 12},
-          {id: 11, stable: 13},
-          {id: 11, stable: 14},
-          {id: 11, stable: 15},
-          {id: 13, stable: 1},
-          {id: 12, stable: 3}
-        ]});
-        root.addChild(treeModel.parse({id: 13, stable: 2}));
-        root.addChild(treeModel.parse({id: 10, stable: 1}));
-        root.addChild(treeModel.parse({id: 10, stable: 2}));
-        root.addChild(treeModel.parse({id: 12, stable: 4}));
+        root = treeModel.parse({
+          id: 1,
+          deps: [
+            { id: 12, stable: 1 },
+            { id: 11, stable: 1 },
+            { id: 11, stable: 2 },
+            { id: 11, stable: 3 },
+            { id: 11, stable: 4 },
+            { id: 11, stable: 5 },
+            { id: 11, stable: 6 },
+            { id: 11, stable: 7 },
+            { id: 12, stable: 2 },
+            { id: 11, stable: 8 },
+            { id: 11, stable: 9 },
+            { id: 11, stable: 10 },
+            { id: 11, stable: 11 },
+            { id: 11, stable: 12 },
+            { id: 11, stable: 13 },
+            { id: 11, stable: 14 },
+            { id: 11, stable: 15 },
+            { id: 13, stable: 1 },
+            { id: 12, stable: 3 },
+          ],
+        });
+        root.addChild(treeModel.parse({ id: 13, stable: 2 }));
+        root.addChild(treeModel.parse({ id: 10, stable: 1 }));
+        root.addChild(treeModel.parse({ id: 10, stable: 2 }));
+        root.addChild(treeModel.parse({ id: 12, stable: 4 }));
         assert.lengthOf(root.children, 23);
         assert.deepEqual(root.model.deps, [
-          {id: 13, stable: 1},
-          {id: 13, stable: 2},
-          {id: 12, stable: 1},
-          {id: 12, stable: 2},
-          {id: 12, stable: 3},
-          {id: 12, stable: 4},
-          {id: 11, stable: 1},
-          {id: 11, stable: 2},
-          {id: 11, stable: 3},
-          {id: 11, stable: 4},
-          {id: 11, stable: 5},
-          {id: 11, stable: 6},
-          {id: 11, stable: 7},
-          {id: 11, stable: 8},
-          {id: 11, stable: 9},
-          {id: 11, stable: 10},
-          {id: 11, stable: 11},
-          {id: 11, stable: 12},
-          {id: 11, stable: 13},
-          {id: 11, stable: 14},
-          {id: 11, stable: 15},
-          {id: 10, stable: 1},
-          {id: 10, stable: 2}
+          { id: 13, stable: 1 },
+          { id: 13, stable: 2 },
+          { id: 12, stable: 1 },
+          { id: 12, stable: 2 },
+          { id: 12, stable: 3 },
+          { id: 12, stable: 4 },
+          { id: 11, stable: 1 },
+          { id: 11, stable: 2 },
+          { id: 11, stable: 3 },
+          { id: 11, stable: 4 },
+          { id: 11, stable: 5 },
+          { id: 11, stable: 6 },
+          { id: 11, stable: 7 },
+          { id: 11, stable: 8 },
+          { id: 11, stable: 9 },
+          { id: 11, stable: 10 },
+          { id: 11, stable: 11 },
+          { id: 11, stable: 12 },
+          { id: 11, stable: 13 },
+          { id: 11, stable: 14 },
+          { id: 11, stable: 15 },
+          { id: 10, stable: 1 },
+          { id: 10, stable: 2 },
         ]);
       });
 
       it('should keep child nodes and model child nodes positions in sync', function () {
         var root;
-        root = treeModel.parse({id: 1, deps: [{id: 12}, {id: 11}]});
-        root.addChild(treeModel.parse({id: 13}));
-        root.addChild(treeModel.parse({id: 10}));
+        root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
+        root.addChild(treeModel.parse({ id: 13 }));
+        root.addChild(treeModel.parse({ id: 10 }));
         assert.lengthOf(root.children, 4);
-        assert.deepEqual(root.model.deps, [{id: 13}, {id: 12}, {id: 11}, {id: 10}]);
+        assert.deepEqual(root.model.deps, [{ id: 13 }, { id: 12 }, { id: 11 }, { id: 10 }]);
 
         assert.equal(root.children[0].model.id, 13);
         assert.equal(root.children[1].model.id, 12);
@@ -736,12 +780,13 @@ describe('TreeModel', function () {
       it('should throw an error when adding child at index but a comparator was provided', function () {
         var root, child;
 
-        root = treeModel.parse({id: 1, deps: [{id: 12}, {id: 11}]});
+        root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
         child = treeModel.parse({ id: 13 });
         assert.throws(
           root.addChildAtIndex.bind(root, child, 1),
           Error,
-          'Cannot add child at index when using a comparator function.');
+          'Cannot add child at index when using a comparator function.'
+        );
       });
     });
 
@@ -749,13 +794,16 @@ describe('TreeModel', function () {
       it('should throw an error when setting a node index but a comparator was provided', function () {
         var root, child;
 
-        root = treeModel.parse({id: 1, deps: [{id: 12}, {id: 11}]});
+        root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
         child = root.children[0];
 
         assert.throws(
-          function () {child.setIndex(0);},
+          function () {
+            child.setIndex(0);
+          },
           Error,
-          'Cannot set node index when using a comparator function.');
+          'Cannot set node index when using a comparator function.'
+        );
       });
     });
 
@@ -768,13 +816,13 @@ describe('TreeModel', function () {
           deps: [
             {
               id: 11,
-              deps: [{id: 111}]
+              deps: [{ id: 111 }],
             },
             {
               id: 12,
-              deps: [{id: 121}, {id: 122}]
-            }
-          ]
+              deps: [{ id: 121 }, { id: 122 }],
+            },
+          ],
         });
       });
 
@@ -783,7 +831,10 @@ describe('TreeModel', function () {
       });
 
       it('should give back the dropped node, which no longer be found in the original root', function () {
-        assert.deepEqual(root.first(idEq(11)).drop().model, {id: 11, deps: [{id: 111}]});
+        assert.deepEqual(root.first(idEq(11)).drop().model, {
+          id: 11,
+          deps: [{ id: 111 }],
+        });
         assert.isUndefined(root.first(idEq(11)));
       });
     });
@@ -797,13 +848,13 @@ describe('TreeModel', function () {
           deps: [
             {
               id: 11,
-              deps: [{id: 111}]
+              deps: [{ id: 111 }],
             },
             {
               id: 12,
-              deps: [{id: 121}, {id: 122}]
-            }
-          ]
+              deps: [{ id: 121 }, { id: 122 }],
+            },
+          ],
         });
       });
 
