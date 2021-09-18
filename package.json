@@ -19,10 +19,12 @@
     "test": "istanbul cover _mocha",
     "cov": "cat ./coverage/lcov.info | coveralls",
     "lint": "jshint index.js test/test.js && eslint index.js test/test.js && npm run dtslint",
+    "lint:prettier": "prettier --check *.mjs test/*.mjs",
     "preversion": "npm test && npm run lint && npm run dist && git add dist/TreeModel*.js",
     "postversion": "git push && git push --tags && echo 'Dont forget to publish to npm...'",
     "dist": "rm -rf dist && mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js",
-    "dtslint": "dtslint types"
+    "dtslint": "dtslint types",
+    "format": "prettier --write *.mjs test/*.mjs"
   },
   "devDependencies": {
     "browserify": "^16",
@@ -33,6 +35,7 @@
     "istanbul": "^0",
     "jshint": "^2",
     "mocha": "^9",
+    "prettier": "^2.4.1",
     "sinon": "^5",
     "uglify-js": "^3"
   },
@@ -40,5 +43,9 @@
     "mergesort": "0.0.1",
     "find-insert-index": "0.0.1"
   },
-  "types": "types"
+  "types": "types",
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 100
+  }
 }
