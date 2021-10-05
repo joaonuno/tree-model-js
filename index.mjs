@@ -262,7 +262,7 @@ function parseArgs() {
   }
   if (!walkStrategies[args.options.strategy]) {
     throw new Error(
-      "Unknown tree walk strategy. Valid strategies are 'pre' [default], 'post' and 'breadth'."
+      'Unknown tree walk strategy. Valid strategies are \'pre\' [default], \'post\' and \'breadth\'.'
     );
   }
   return args;
