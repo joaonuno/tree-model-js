@@ -409,7 +409,7 @@ describe('TreeModel', function () {
           assert.throws(
             root.walk.bind(root, { strategy: 'unknownStrategy' }, callback121, this),
             Error,
-            "Unknown tree walk strategy. Valid strategies are 'pre' [default], 'post' and 'breadth'."
+            'Unknown tree walk strategy. Valid strategies are \'pre\' [default], \'post\' and \'breadth\'.'
           );
         });
       });
