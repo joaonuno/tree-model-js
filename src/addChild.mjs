@@ -1,4 +1,4 @@
-import findInsertIndex from 'find-insert-index';
+import { findInsertIndex } from './findInsertIndex.mjs';
 import { hasComparatorFunction } from './hasCompareFunction.mjs';
 import { Node } from './Node.mjs';
 

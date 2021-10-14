@@ -32,10 +32,7 @@
     "prettier": "^2.4.1",
     "sinon": "^5"
   },
-  "dependencies": {
-    "find-insert-index": "0.0.1"
-  },
-  "types": "types",
+"types": "types",
   "prettier": {
     "singleQuote": true,
     "printWidth": 100
