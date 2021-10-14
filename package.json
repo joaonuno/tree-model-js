@@ -33,8 +33,7 @@
     "sinon": "^5"
   },
   "dependencies": {
-    "find-insert-index": "0.0.1",
-    "mergesort": "0.0.1"
+    "find-insert-index": "0.0.1"
   },
   "types": "types",
   "prettier": {
