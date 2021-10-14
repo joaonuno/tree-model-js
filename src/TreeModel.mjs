@@ -1,4 +1,3 @@
-import mergeSort from 'mergesort';
 import { Node } from './Node.mjs';
 
 function addChildToNode(node, child) {
@@ -27,10 +26,7 @@ export class TreeModel {
     node = new Node(this.config, model);
     if (model[this.config.childrenPropertyName] instanceof Array) {
       if (this.config.modelComparatorFn) {
-        model[this.config.childrenPropertyName] = mergeSort(
-          this.config.modelComparatorFn,
-          model[this.config.childrenPropertyName]
-        );
+        model[this.config.childrenPropertyName].sort(this.config.modelComparatorFn);
       }
       for (
         i = 0, childCount = model[this.config.childrenPropertyName].length;
