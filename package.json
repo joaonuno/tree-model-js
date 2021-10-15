@@ -27,10 +27,8 @@
     "format": "prettier --write *.js test/*.js"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.5",
-    "@babel/eslint-parser": "^7.15.7",
     "chai": "^4",
-    "eslint": "^7.32.0",
+    "eslint": "^8",
     "mocha": "^9",
     "prettier": "^2.4.1",
     "sinon": "^5"
