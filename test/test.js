@@ -2,7 +2,7 @@
 
 import chai from 'chai';
 import sinon from 'sinon';
-import { TreeModel } from '../index.mjs';
+import { TreeModel } from '../src/index.js';
 
 const { assert } = chai;
 

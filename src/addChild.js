@@ -1,6 +1,6 @@
-import { findInsertIndex } from './findInsertIndex.mjs';
-import { hasComparatorFunction } from './hasCompareFunction.mjs';
-import { Node } from './Node.mjs';
+import { findInsertIndex } from './findInsertIndex.js';
+import { hasComparatorFunction } from './hasCompareFunction.js';
+import { Node } from './Node.js';
 
 export function addChild(self, child, insertIndex) {
   var index;

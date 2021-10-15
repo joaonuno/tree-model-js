@@ -1,7 +1,7 @@
 /* global describe, it */
 
 import chai from 'chai';
-import { findInsertIndex } from '../src/findInsertIndex.mjs';
+import { findInsertIndex } from '../src/findInsertIndex.js';
 
 const { assert } = chai;
 
