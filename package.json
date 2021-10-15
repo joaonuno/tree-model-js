@@ -13,15 +13,18 @@
   "bugs": "https://github.com/joaonuno/tree-model-js/issues",
   "license": "MIT",
   "author": "João Nuno Silva <jnss81@gmail.com> (http://jnuno.com)",
-  "main": "index.js",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js"
+  },
   "scripts": {
     "test": "mocha",
-    "lint": "eslint index.mjs test/test.mjs",
-    "lint:prettier": "prettier --check *.mjs test/*.mjs",
+    "lint": "eslint src/*.js test/*.js",
+    "lint:prettier": "prettier --check *.js test/*.js",
     "preversion": "npm test && npm run lint",
     "postversion": "echo 'Dont forget to publish to npm...'",
     "dist": "rm -rf dist && mkdir -p dist && browserify index.js -o dist/TreeModel.js -s TreeModel && uglifyjs dist/TreeModel.js > dist/TreeModel-min.js",
-    "format": "prettier --write *.mjs test/*.mjs"
+    "format": "prettier --write *.js test/*.js"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -32,7 +35,7 @@
     "prettier": "^2.4.1",
     "sinon": "^5"
   },
-"types": "types",
+  "types": "types",
   "prettier": {
     "singleQuote": true,
     "printWidth": 100

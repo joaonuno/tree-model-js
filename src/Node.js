@@ -1,6 +1,6 @@
-import { addChild } from './addChild.mjs';
-import { hasComparatorFunction } from './hasCompareFunction.mjs';
-import { walkStrategies } from './walkStrategies.mjs';
+import { addChild } from './addChild.js';
+import { hasComparatorFunction } from './hasCompareFunction.js';
+import { walkStrategies } from './walkStrategies.js';
 
 /**
  * Parse the arguments of traversal functions. These functions can take one optional

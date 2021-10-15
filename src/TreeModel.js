@@ -1,4 +1,4 @@
-import { Node } from './Node.mjs';
+import { Node } from './Node.js';
 
 function addChildToNode(node, child) {
   child.parent = node;
