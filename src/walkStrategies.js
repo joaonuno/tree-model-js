@@ -1,31 +1,46 @@
-export const walkStrategies = {};
-
-walkStrategies.pre = function depthFirstPreOrder(callback, context) {
+/**
+ * @template T
+ * @param {import('../types/main').Callback<T>} callback
+ * @param {import('./Node.js').Node<T>} model
+ * @returns {boolean}
+ */
+function pre(callback, model) {
   var i, childCount, keepGoing;
-  keepGoing = callback.call(context, this);
-  for (i = 0, childCount = this.children.length; i < childCount; i++) {
+  keepGoing = callback(model);
+  for (i = 0, childCount = model.children.length; i < childCount; i++) {
     if (keepGoing === false) {
       return false;
     }
-    keepGoing = depthFirstPreOrder.call(this.children[i], callback, context);
+    keepGoing = pre(callback, model.children[i]);
   }
   return keepGoing;
-};
+}
 
-walkStrategies.post = function depthFirstPostOrder(callback, context) {
+/**
+ * @template T
+ * @param {import('../types/main').Callback<T>} callback
+ * @param {import('./Node.js').Node<T>} model
+ * @returns {boolean}
+ */
+function post(callback, model) {
   var i, childCount, keepGoing;
-  for (i = 0, childCount = this.children.length; i < childCount; i++) {
-    keepGoing = depthFirstPostOrder.call(this.children[i], callback, context);
+  for (i = 0, childCount = model.children.length; i < childCount; i++) {
+    keepGoing = post(callback, model.children[i]);
     if (keepGoing === false) {
       return false;
     }
   }
-  keepGoing = callback.call(context, this);
+  keepGoing = callback(model);
   return keepGoing;
-};
+}
 
-walkStrategies.breadth = function breadthFirst(callback, context) {
-  var queue = [this];
+/**
+ * @template T
+ * @param {import('../types/main').Callback<T>} callback
+ * @param {import('./Node.js').Node<T>} model
+ */
+function breadth(callback, model) {
+  var queue = [model];
   (function processQueue() {
     var i, childCount, node;
     if (queue.length === 0) {
@@ -35,8 +50,17 @@ walkStrategies.breadth = function breadthFirst(callback, context) {
     for (i = 0, childCount = node.children.length; i < childCount; i++) {
       queue.push(node.children[i]);
     }
-    if (callback.call(context, node) !== false) {
+    if (callback(node) !== false) {
       processQueue();
     }
   })();
+}
+
+/**
+ * @template T
+ * @type {import('../types/main').walkStrategies<T>} */
+export const walkStrategies = {
+  pre,
+  post,
+  breadth,
 };
