@@ -8,26 +8,28 @@ import { walkStrategies } from './walkStrategies.js';
 function verifyStrategy(strategy) {
   if (!walkStrategies[strategy]) {
     throw new Error(
-      `"${String(strategy)}" is an unknown tree walk strategy. Valid strategies are 'pre' [default], 'post' and 'breadth'.`
+      `"${String(
+        strategy
+      )}" is an unknown tree walk strategy. Valid strategies are 'pre' [default], 'post' and 'breadth'.`
     );
   }
 }
 /**
- * @template T
+ * @template {Record<string, unknown>} NG
  */
 export class Node {
-  /** @type {Node<T> | undefined} */
+  /** @type {Node<NG> | undefined} */
   parent = undefined;
 
-  /** @type {Node<T>[]} */
+  /** @type {Node<NG>[]} */
   children = [];
 
-  /** @type {import('../types/main').Model<T>} */
+  /** @type {import('../types/main').Model<NG>} */
   model;
 
   /**
-   * @param {import('../types/main').Config<T>} config
-   * @param {import('../types/main').Model<T>} model
+   * @param {import('../types/main').Config<NG>} config
+   * @param {import('../types/main').Model<NG>} model
    */
   constructor(config, model) {
     this.config = config;
@@ -46,7 +48,7 @@ export class Node {
   }
 
   /**
-   * @param {Node<T>} child
+   * @param {Node<NG>} child
    * @param {number} [insertIndex]
    * @returns
    */
@@ -87,9 +89,9 @@ export class Node {
   }
 
   /**
-   * @param {Node<T>} child
+   * @param {Node<NG>} child
    * @param {number} index
-   * @returns {Node<T>}
+   * @returns {Node<NG>}
    */
   addChildAtIndex(child, index) {
     if (this.hasComparatorFunction()) {
@@ -122,9 +124,13 @@ export class Node {
     if (this.parent) {
       var oldIndex = this.parent.children.indexOf(this);
       this.parent.children.splice(index, 0, this.parent.children.splice(oldIndex, 1)[0]);
-  
+
       if (this.parent.model && this.parent.model.children) {
-        this.parent.model.children.splice(index, 0, this.parent.model.children.splice(oldIndex, 1)[0]);
+        this.parent.model.children.splice(
+          index,
+          0,
+          this.parent.model.children.splice(oldIndex, 1)[0]
+        );
       }
     }
 
@@ -153,41 +159,45 @@ export class Node {
   }
 
   /**
-   * @param {import('../types/main').Callback<T>} callback
-   * @param {Partial<import('../types/main').walkOptions<T>>} options
+   * @param {import('../types/main').Callback<NG>} callback
+   * @param {Partial<import('../types/main').walkOptions<NG>>} options
    */
   walk(callback, { strategy = 'pre' } = {}) {
     verifyStrategy(strategy);
-    walkStrategies[strategy](callback, this);
+
+    /** @type {import('../types/main').Strategy<NG>} */
+    const strat = (walkStrategies[strategy]);
+    strat(callback, this);
+
+    // walkStrategies[strategy](callback, this);
   }
 
   /**
-   * @param {import('../types/main').Callback<T>} predicate
-   * @param {Partial<import('../types/main').walkOptions<T>>} options
-   * @returns {Node<T>[]}
+   * @param {import('../types/main').Callback<NG>} predicate
+   * @param {Partial<import('../types/main').walkOptions<NG>>} options
+   * @returns {Node<NG>[]}
    */
   all(predicate = () => true, { strategy = 'pre' } = {}) {
     verifyStrategy(strategy);
-    /** @type {Node<T>[]} */
+    /** @type {Node<NG>[]} */
     const allNodes = [];
-    walkStrategies[strategy]((node) => {
-      if (predicate(node)) {
-        allNodes.push(node);
-      }
-      return true;
-    }, this);
+    /** @type {import('../types/main').Strategy<NG>} */
+    const strat = (walkStrategies[strategy]);
+    strat(predicate, this);
     return allNodes;
   }
 
   /**
-   * @param {import('../types/main').Callback<T>} predicate
-   * @param {Partial<import('../types/main').walkOptions<T>>} options
-   * @returns {Node<T> | undefined}
+   * @param {import('../types/main').Callback<NG>} predicate
+   * @param {Partial<import('../types/main').walkOptions<NG>>} options
+   * @returns {Node<NG> | undefined}
    */
   first(predicate = () => true, { strategy = 'pre' } = {}) {
     verifyStrategy(strategy);
     let firstNode;
-    walkStrategies[strategy]((node) => {
+    /** @type {import('../types/main').Strategy<NG>} */
+    const strat = (walkStrategies[strategy]);
+    strat((node) => {
       if (predicate(node)) {
         firstNode = node;
         return false;

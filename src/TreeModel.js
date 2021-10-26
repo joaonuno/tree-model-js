@@ -13,24 +13,24 @@ function addChildToNode(node, child) {
 }
 
 /**
- * @template T
+ * @template {Record<string, unknown>} TG
  */
 export class TreeModel {
-  /** @type {import('../types/main').Config<T>} */
+  /** @type {import('../types/main').Config<TG>} */
   config = {
     //childrenPropertyName: /** @type {keyof import('../types/main').Model<T>} */ ('children'),
   };
 
   /**
-   * @param {Partial<import('../types/main').Config<T>>} config
+   * @param {Partial<import('../types/main').Config<TG>>} config
    */
   constructor(config = {}) {
     this.config = { ...this.config, ...config };
   }
 
   /**
-   * @param {import('../types/main').Model<T>} model 
-   * @returns {Node<T>}
+   * @param {import('../types/main').Model<TG>} model 
+   * @returns {Node<TG>}
    */
   parse(model) {
     var i, childCount, node;

@@ -57,7 +57,7 @@ function breadth(callback, model) {
 }
 
 /**
- * @template T
+ * @template {Record<string, unknown>} T
  * @type {import('../types/main').walkStrategies<T>} */
 export const walkStrategies = {
   pre,
