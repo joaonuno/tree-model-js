@@ -1,6 +1,7 @@
 /* global describe, it, beforeEach */
 
 /** @typedef {import('./test-types').IdNode} IdNode */
+/** @typedef {import('./test-types').IdNodeDeps} IdNodeDeps */
 
 import chai from 'chai';
 import sinon from 'sinon';
@@ -20,6 +21,14 @@ describe('TreeModel', function () {
   function idEq(id) {
     return (node) => node.model.id === id;
   }
+
+  /**
+   * @param {number} id
+   * @returns {(node: IdNodeDeps) => boolean}
+   */
+   function idDepsEq(id) {
+    return (node) => node.model.id === id;
+  }  
 
   describe('with default configuration', function () {
     /** @type {TreeModel<{id: number}>} */
@@ -50,9 +59,7 @@ describe('TreeModel', function () {
       });
 
       it('should create a root node when given a model without children', function () {
-        var root;
-
-        root = treeModel.parse({ id: 1 });
+        const root = treeModel.parse({ id: 1 });
 
         assert.isUndefined(root.parent);
         assert.isArray(root.children);
@@ -607,286 +614,293 @@ describe('TreeModel', function () {
     });
   });
 
-  // describe.skip('with custom children and comparator', function () {
-  //   /** @type {IdNode} */
-  //   var treeModel;
+  describe('with custom children and comparator', function () {
+    /** @type {TreeModel<{id: number}, 'deps'>} */
+    let treeModel;
 
-  //   beforeEach(function () {
-  //     treeModel = new TreeModel({
-  //       childrenPropertyName: 'deps',
-  //       modelComparatorFn: function (a, b) {
-  //         return b.id - a.id;
-  //       },
-  //     });
-  //   });
+    beforeEach(function () {
+      treeModel = new TreeModel({
+        childrenPropertyName: 'deps',
+        modelComparatorFn: function (a, b) {
+          return b.id - a.id;
+        },
+      });
+    });
 
-  //   describe('parse()', function () {
-  //     it('should create a root and stable sort the respective children according to the comparator', function () {
-  //       var root, node12, i;
+    describe('parse()', function () {
+      it('should create a root and stable sort the respective children according to the comparator', function () {
+        /** @type {TreeModel<{id: number, stable?: number}, 'deps'>} */
+        const treeModelStable = new TreeModel({
+          childrenPropertyName: 'deps',
+          modelComparatorFn: (a, b) => b.id - a.id,
+        });
+        const root = treeModelStable.parse({
+          id: 1,
+          deps: [
+            {
+              id: 11,
+              deps: [{ id: 111 }],
+            },
+            {
+              id: 12,
+              deps: [
+                { id: 122, stable: 1 },
+                { id: 121, stable: 1 },
+                { id: 121, stable: 2 },
+                { id: 121, stable: 3 },
+                { id: 121, stable: 4 },
+                { id: 121, stable: 5 },
+                { id: 121, stable: 6 },
+                { id: 121, stable: 7 },
+                { id: 121, stable: 8 },
+                { id: 121, stable: 9 },
+                { id: 121, stable: 10 },
+                { id: 121, stable: 11 },
+                { id: 121, stable: 12 },
+                { id: 121, stable: 13 },
+                { id: 121, stable: 14 },
+                { id: 121, stable: 15 },
+                { id: 122, stable: 2 },
+              ],
+            },
+          ],
+        });
 
-  //       root = treeModel.parse({
-  //         id: 1,
-  //         deps: [
-  //           {
-  //             id: 11,
-  //             deps: [{ id: 111 }],
-  //           },
-  //           {
-  //             id: 12,
-  //             deps: [
-  //               { id: 122, stable: 1 },
-  //               { id: 121, stable: 1 },
-  //               { id: 121, stable: 2 },
-  //               { id: 121, stable: 3 },
-  //               { id: 121, stable: 4 },
-  //               { id: 121, stable: 5 },
-  //               { id: 121, stable: 6 },
-  //               { id: 121, stable: 7 },
-  //               { id: 121, stable: 8 },
-  //               { id: 121, stable: 9 },
-  //               { id: 121, stable: 10 },
-  //               { id: 121, stable: 11 },
-  //               { id: 121, stable: 12 },
-  //               { id: 121, stable: 13 },
-  //               { id: 121, stable: 14 },
-  //               { id: 121, stable: 15 },
-  //               { id: 122, stable: 2 },
-  //             ],
-  //           },
-  //         ],
-  //       });
+        assert.isUndefined(root.parent);
+        assert.isArray(root.children);
+        assert.lengthOf(root.children, 2);
+        assert.deepEqual(root.model, {
+          id: 1,
+          deps: [
+            {
+              id: 12,
+              deps: [
+                { id: 122, stable: 1 },
+                { id: 122, stable: 2 },
+                { id: 121, stable: 1 },
+                { id: 121, stable: 2 },
+                { id: 121, stable: 3 },
+                { id: 121, stable: 4 },
+                { id: 121, stable: 5 },
+                { id: 121, stable: 6 },
+                { id: 121, stable: 7 },
+                { id: 121, stable: 8 },
+                { id: 121, stable: 9 },
+                { id: 121, stable: 10 },
+                { id: 121, stable: 11 },
+                { id: 121, stable: 12 },
+                { id: 121, stable: 13 },
+                { id: 121, stable: 14 },
+                { id: 121, stable: 15 },
+              ],
+            },
+            {
+              id: 11,
+              deps: [{ id: 111 }],
+            },
+          ],
+        });
 
-  //       assert.isUndefined(root.parent);
-  //       assert.isArray(root.children);
-  //       assert.lengthOf(root.children, 2);
-  //       assert.deepEqual(root.model, {
-  //         id: 1,
-  //         deps: [
-  //           {
-  //             id: 12,
-  //             deps: [
-  //               { id: 122, stable: 1 },
-  //               { id: 122, stable: 2 },
-  //               { id: 121, stable: 1 },
-  //               { id: 121, stable: 2 },
-  //               { id: 121, stable: 3 },
-  //               { id: 121, stable: 4 },
-  //               { id: 121, stable: 5 },
-  //               { id: 121, stable: 6 },
-  //               { id: 121, stable: 7 },
-  //               { id: 121, stable: 8 },
-  //               { id: 121, stable: 9 },
-  //               { id: 121, stable: 10 },
-  //               { id: 121, stable: 11 },
-  //               { id: 121, stable: 12 },
-  //               { id: 121, stable: 13 },
-  //               { id: 121, stable: 14 },
-  //               { id: 121, stable: 15 },
-  //             ],
-  //           },
-  //           {
-  //             id: 11,
-  //             deps: [{ id: 111 }],
-  //           },
-  //         ],
-  //       });
+        assert.deepEqual(root, root.children[0].parent);
+        assert.deepEqual(root, root.children[1].parent);
 
-  //       assert.deepEqual(root, root.children[0].parent);
-  //       assert.deepEqual(root, root.children[1].parent);
+        const node12 = root.children[0];
+        assert.isArray(node12.children);
+        assert.lengthOf(node12.children, 17);
+        assert.deepEqual(node12.model, {
+          id: 12,
+          deps: [
+            { id: 122, stable: 1 },
+            { id: 122, stable: 2 },
+            { id: 121, stable: 1 },
+            { id: 121, stable: 2 },
+            { id: 121, stable: 3 },
+            { id: 121, stable: 4 },
+            { id: 121, stable: 5 },
+            { id: 121, stable: 6 },
+            { id: 121, stable: 7 },
+            { id: 121, stable: 8 },
+            { id: 121, stable: 9 },
+            { id: 121, stable: 10 },
+            { id: 121, stable: 11 },
+            { id: 121, stable: 12 },
+            { id: 121, stable: 13 },
+            { id: 121, stable: 14 },
+            { id: 121, stable: 15 },
+          ],
+        });
 
-  //       node12 = root.children[0];
-  //       assert.isArray(node12.children);
-  //       assert.lengthOf(node12.children, 17);
-  //       assert.deepEqual(node12.model, {
-  //         id: 12,
-  //         deps: [
-  //           { id: 122, stable: 1 },
-  //           { id: 122, stable: 2 },
-  //           { id: 121, stable: 1 },
-  //           { id: 121, stable: 2 },
-  //           { id: 121, stable: 3 },
-  //           { id: 121, stable: 4 },
-  //           { id: 121, stable: 5 },
-  //           { id: 121, stable: 6 },
-  //           { id: 121, stable: 7 },
-  //           { id: 121, stable: 8 },
-  //           { id: 121, stable: 9 },
-  //           { id: 121, stable: 10 },
-  //           { id: 121, stable: 11 },
-  //           { id: 121, stable: 12 },
-  //           { id: 121, stable: 13 },
-  //           { id: 121, stable: 14 },
-  //           { id: 121, stable: 15 },
-  //         ],
-  //       });
+        for (let i = 0; i < 17; i++) {
+          assert.deepEqual(node12, node12.children[i].parent);
+        }
+      });
+    });
 
-  //       for (i = 0; i < 17; i++) {
-  //         assert.deepEqual(node12, node12.children[i].parent);
-  //       }
-  //     });
-  //   });
+    describe('addChild()', function () {
+      it('should add child respecting the given comparator', function () {
+        /** @type {TreeModel<{id: number, stable?: number}, 'deps'>} */
+        const treeModelStable = new TreeModel({
+          childrenPropertyName: 'deps',
+          modelComparatorFn: (a, b) => b.id - a.id,
+        });
 
-  //   describe('addChild()', function () {
-  //     it('should add child respecting the given comparator', function () {
-  //       var root;
-  //       root = treeModel.parse({
-  //         id: 1,
-  //         deps: [
-  //           { id: 12, stable: 1 },
-  //           { id: 11, stable: 1 },
-  //           { id: 11, stable: 2 },
-  //           { id: 11, stable: 3 },
-  //           { id: 11, stable: 4 },
-  //           { id: 11, stable: 5 },
-  //           { id: 11, stable: 6 },
-  //           { id: 11, stable: 7 },
-  //           { id: 12, stable: 2 },
-  //           { id: 11, stable: 8 },
-  //           { id: 11, stable: 9 },
-  //           { id: 11, stable: 10 },
-  //           { id: 11, stable: 11 },
-  //           { id: 11, stable: 12 },
-  //           { id: 11, stable: 13 },
-  //           { id: 11, stable: 14 },
-  //           { id: 11, stable: 15 },
-  //           { id: 13, stable: 1 },
-  //           { id: 12, stable: 3 },
-  //         ],
-  //       });
-  //       root.addChild(treeModel.parse({ id: 13, stable: 2 }));
-  //       root.addChild(treeModel.parse({ id: 10, stable: 1 }));
-  //       root.addChild(treeModel.parse({ id: 10, stable: 2 }));
-  //       root.addChild(treeModel.parse({ id: 12, stable: 4 }));
-  //       assert.lengthOf(root.children, 23);
-  //       assert.deepEqual(root.model.deps, [
-  //         { id: 13, stable: 1 },
-  //         { id: 13, stable: 2 },
-  //         { id: 12, stable: 1 },
-  //         { id: 12, stable: 2 },
-  //         { id: 12, stable: 3 },
-  //         { id: 12, stable: 4 },
-  //         { id: 11, stable: 1 },
-  //         { id: 11, stable: 2 },
-  //         { id: 11, stable: 3 },
-  //         { id: 11, stable: 4 },
-  //         { id: 11, stable: 5 },
-  //         { id: 11, stable: 6 },
-  //         { id: 11, stable: 7 },
-  //         { id: 11, stable: 8 },
-  //         { id: 11, stable: 9 },
-  //         { id: 11, stable: 10 },
-  //         { id: 11, stable: 11 },
-  //         { id: 11, stable: 12 },
-  //         { id: 11, stable: 13 },
-  //         { id: 11, stable: 14 },
-  //         { id: 11, stable: 15 },
-  //         { id: 10, stable: 1 },
-  //         { id: 10, stable: 2 },
-  //       ]);
-  //     });
+        const root = treeModelStable.parse({
+          id: 1,
+          deps: [
+            { id: 12, stable: 1 },
+            { id: 11, stable: 1 },
+            { id: 11, stable: 2 },
+            { id: 11, stable: 3 },
+            { id: 11, stable: 4 },
+            { id: 11, stable: 5 },
+            { id: 11, stable: 6 },
+            { id: 11, stable: 7 },
+            { id: 12, stable: 2 },
+            { id: 11, stable: 8 },
+            { id: 11, stable: 9 },
+            { id: 11, stable: 10 },
+            { id: 11, stable: 11 },
+            { id: 11, stable: 12 },
+            { id: 11, stable: 13 },
+            { id: 11, stable: 14 },
+            { id: 11, stable: 15 },
+            { id: 13, stable: 1 },
+            { id: 12, stable: 3 },
+          ],
+        });
+        root.addChild(treeModelStable.parse({ id: 13, stable: 2 }));
+        root.addChild(treeModelStable.parse({ id: 10, stable: 1 }));
+        root.addChild(treeModelStable.parse({ id: 10, stable: 2 }));
+        root.addChild(treeModelStable.parse({ id: 12, stable: 4 }));
+        assert.lengthOf(root.children, 23);
+        assert.deepEqual(root.model.deps, [
+          { id: 13, stable: 1 },
+          { id: 13, stable: 2 },
+          { id: 12, stable: 1 },
+          { id: 12, stable: 2 },
+          { id: 12, stable: 3 },
+          { id: 12, stable: 4 },
+          { id: 11, stable: 1 },
+          { id: 11, stable: 2 },
+          { id: 11, stable: 3 },
+          { id: 11, stable: 4 },
+          { id: 11, stable: 5 },
+          { id: 11, stable: 6 },
+          { id: 11, stable: 7 },
+          { id: 11, stable: 8 },
+          { id: 11, stable: 9 },
+          { id: 11, stable: 10 },
+          { id: 11, stable: 11 },
+          { id: 11, stable: 12 },
+          { id: 11, stable: 13 },
+          { id: 11, stable: 14 },
+          { id: 11, stable: 15 },
+          { id: 10, stable: 1 },
+          { id: 10, stable: 2 },
+        ]);
+      });
 
-  //     it('should keep child nodes and model child nodes positions in sync', function () {
-  //       var root;
-  //       root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
-  //       root.addChild(treeModel.parse({ id: 13 }));
-  //       root.addChild(treeModel.parse({ id: 10 }));
-  //       assert.lengthOf(root.children, 4);
-  //       assert.deepEqual(root.model.deps, [{ id: 13 }, { id: 12 }, { id: 11 }, { id: 10 }]);
+      it('should keep child nodes and model child nodes positions in sync', function () {
+        const root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
+        root.addChild(treeModel.parse({ id: 13 }));
+        root.addChild(treeModel.parse({ id: 10 }));
+        assert.lengthOf(root.children, 4);
+        assert.deepEqual(root.model.deps, [{ id: 13 }, { id: 12 }, { id: 11 }, { id: 10 }]);
 
-  //       assert.equal(root.children[0].model.id, 13);
-  //       assert.equal(root.children[1].model.id, 12);
-  //       assert.equal(root.children[2].model.id, 11);
-  //       assert.equal(root.children[3].model.id, 10);
-  //     });
+        assert.equal(root.children[0].model.id, 13);
+        assert.equal(root.children[1].model.id, 12);
+        assert.equal(root.children[2].model.id, 11);
+        assert.equal(root.children[3].model.id, 10);
+      });
 
-  //     it('should throw an error when adding child at index but a comparator was provided', function () {
-  //       var root, child;
+      it('should throw an error when adding child at index but a comparator was provided', function () {
+        const root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
+        const child = treeModel.parse({ id: 13 });
+        assert.throws(
+          root.addChildAtIndex.bind(root, child, 1),
+          Error,
+          'Cannot add child at index when using a comparator function.'
+        );
+      });
+    });
 
-  //       root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
-  //       child = treeModel.parse({ id: 13 });
-  //       assert.throws(
-  //         root.addChildAtIndex.bind(root, child, 1),
-  //         Error,
-  //         'Cannot add child at index when using a comparator function.'
-  //       );
-  //     });
-  //   });
+    describe('setIndex()', function () {
+      it('should throw an error when setting a node index but a comparator was provided', function () {
+        const root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
+        const child = root.children[0];
 
-  //   describe('setIndex()', function () {
-  //     it('should throw an error when setting a node index but a comparator was provided', function () {
-  //       var root, child;
+        assert.throws(
+          function () {
+            child.setIndex(0);
+          },
+          Error,
+          'Cannot set node index when using a comparator function.'
+        );
+      });
+    });
 
-  //       root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
-  //       child = root.children[0];
+    describe('drop()', function () {
+      /** @type {IdNodeDeps} */
+      let root;
 
-  //       assert.throws(
-  //         function () {
-  //           child.setIndex(0);
-  //         },
-  //         Error,
-  //         'Cannot set node index when using a comparator function.'
-  //       );
-  //     });
-  //   });
+      beforeEach(function () {
+        root = treeModel.parse({
+          id: 1,
+          deps: [
+            {
+              id: 11,
+              deps: [{ id: 111 }],
+            },
+            {
+              id: 12,
+              deps: [{ id: 121 }, { id: 122 }],
+            },
+          ],
+        });
+      });
 
-  //   describe('drop()', function () {
-  //     var root;
+      it('should give back the dropped node, even if it is the root', function () {
+        assert.deepEqual(root.drop(), root);
+      });
 
-  //     beforeEach(function () {
-  //       root = treeModel.parse({
-  //         id: 1,
-  //         deps: [
-  //           {
-  //             id: 11,
-  //             deps: [{ id: 111 }],
-  //           },
-  //           {
-  //             id: 12,
-  //             deps: [{ id: 121 }, { id: 122 }],
-  //           },
-  //         ],
-  //       });
-  //     });
+      it('should give back the dropped node, which no longer be found in the original root', function () {
+        const first = /** @type {IdNodeDeps} */ (root.first(idDepsEq(11)));
+        assert.deepEqual(first.drop().model, {
+          id: 11,
+          deps: [{ id: 111 }],
+        });
+        assert.isUndefined(root.first(idDepsEq(11)));
+      });
+    });
 
-  //     it('should give back the dropped node, even if it is the root', function () {
-  //       assert.deepEqual(root.drop(), root);
-  //     });
+    describe('hasChildren()', function () {
+      /** @type {IdNodeDeps} */
+      let root;
 
-  //     it('should give back the dropped node, which no longer be found in the original root', function () {
-  //       assert.deepEqual(root.first(idEq(11)).drop().model, {
-  //         id: 11,
-  //         deps: [{ id: 111 }],
-  //       });
-  //       assert.isUndefined(root.first(idEq(11)));
-  //     });
-  //   });
+      beforeEach(function () {
+        root = treeModel.parse({
+          id: 1,
+          deps: [
+            {
+              id: 11,
+              deps: [{ id: 111 }],
+            },
+            {
+              id: 12,
+              deps: [{ id: 121 }, { id: 122 }],
+            },
+          ],
+        });
+      });
 
-  //   describe('hasChildren()', function () {
-  //     var root;
+      it('should return true for node with children', function () {
+        assert.equal(root.hasChildren(), true);
+      });
 
-  //     beforeEach(function () {
-  //       root = treeModel.parse({
-  //         id: 1,
-  //         deps: [
-  //           {
-  //             id: 11,
-  //             deps: [{ id: 111 }],
-  //           },
-  //           {
-  //             id: 12,
-  //             deps: [{ id: 121 }, { id: 122 }],
-  //           },
-  //         ],
-  //       });
-  //     });
-
-  //     it('should return true for node with children', function () {
-  //       assert.equal(root.hasChildren(), true);
-  //     });
-
-  //     it('should return false for node without children', function () {
-  //       assert.equal(root.first(idEq(111)).hasChildren(), false);
-  //     });
-  //   });
-  // });
+      it('should return false for node without children', function () {
+        const first = /** @type {IdNodeDeps} */ (root.first(idDepsEq(111)));
+        assert.equal(first.hasChildren(), false);
+      });
+    });
+  });
 });

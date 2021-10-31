@@ -1,7 +1,8 @@
 /**
- * @template T
- * @param {import('../types/main').Callback<T>} callback
- * @param {import('./Node.js').Node<T>} model
+ * @template {Record<string, unknown>} T
+ * @template {string} [Key='children']
+ * @param {import('../types/main').Callback<T, Key>} callback
+ * @param {import('./Node.js').Node<T, Key>} model
  * @returns {boolean}
  */
 function pre(callback, model) {
@@ -17,9 +18,10 @@ function pre(callback, model) {
 }
 
 /**
- * @template T
- * @param {import('../types/main').Callback<T>} callback
- * @param {import('./Node.js').Node<T>} model
+ * @template {Record<string, unknown>} T
+ * @template {string} [Key='children']
+ * @param {import('../types/main').Callback<T, Key>} callback
+ * @param {import('./Node.js').Node<T, Key>} model
  * @returns {boolean}
  */
 function post(callback, model) {
@@ -35,9 +37,10 @@ function post(callback, model) {
 }
 
 /**
- * @template T
- * @param {import('../types/main').Callback<T>} callback
- * @param {import('./Node.js').Node<T>} model
+ * @template {Record<string, unknown>} T
+ * @template {string} [Key='children']
+ * @param {import('../types/main').Callback<T, Key>} callback
+ * @param {import('./Node.js').Node<T, Key>} model
  */
 function breadth(callback, model) {
   var queue = [model];
@@ -47,18 +50,21 @@ function breadth(callback, model) {
       return;
     }
     node = queue.shift();
-    for (i = 0, childCount = node.children.length; i < childCount; i++) {
-      queue.push(node.children[i]);
-    }
-    if (callback(node) !== false) {
-      processQueue();
+    if (node) {
+      for (i = 0, childCount = node.children.length; i < childCount; i++) {
+        queue.push(node.children[i]);
+      }
+      if (callback(node) !== false) {
+        processQueue();
+      }
     }
   })();
 }
 
 /**
  * @template {Record<string, unknown>} T
- * @type {import('../types/main').walkStrategies<T>} */
+ * @template {string} [Key='children']
+ * @type {import('../types/main').walkStrategies<T, Key>} */
 export const walkStrategies = {
   pre,
   post,

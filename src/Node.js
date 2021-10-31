@@ -2,7 +2,6 @@ import { findInsertIndex } from './findInsertIndex.js';
 import { walkStrategies } from './walkStrategies.js';
 
 /**
- *
  * @param {keyof walkStrategies} strategy
  */
 function verifyStrategy(strategy) {
@@ -15,21 +14,22 @@ function verifyStrategy(strategy) {
   }
 }
 /**
- * @template {Record<string, unknown>} NG
+ * @template {Record<string, unknown>} TN
+ * @template {string} [Key='children']
  */
 export class Node {
-  /** @type {Node<NG> | undefined} */
+  /** @type {Node<TN, Key> | undefined} */
   parent = undefined;
 
-  /** @type {Node<NG>[]} */
+  /** @type {Node<TN, Key>[]} */
   children = [];
 
-  /** @type {import('../types/main').Model<NG>} */
+  /** @type {import('../types/main').Model<TN, Key>} */
   model;
 
   /**
-   * @param {import('../types/main').Config<NG>} config
-   * @param {import('../types/main').Model<NG>} model
+   * @param {import('../types/main').Config<TN, Key>} config
+   * @param {import('../types/main').Model<TN, Key>} model
    */
   constructor(config, model) {
     this.config = config;
@@ -43,12 +43,15 @@ export class Node {
     return this.parent === undefined;
   }
 
+  /**
+   * @returns {boolean}
+   */
   hasChildren() {
     return this.children.length > 0;
   }
 
   /**
-   * @param {Node<NG>} child
+   * @param {Node<TN, Key>} child
    * @param {number} [insertIndex]
    * @returns
    */
@@ -59,29 +62,31 @@ export class Node {
       throw new TypeError('Child must be of type Node.');
     }
 
+    const childProp = this.config.childrenPropertyName;
+
     child.parent = this;
-    if (!(this.model.children instanceof Array)) {
-      this.model.children = [];
+    if (!(this.model[childProp] instanceof Array)) {
+      this.model[childProp] = [];
     }
 
     if (typeof this.config.modelComparatorFn === 'function') {
       // Find the index to insert the child
-      index = findInsertIndex(this.config.modelComparatorFn, this.model.children, child.model);
+      index = findInsertIndex(this.config.modelComparatorFn, this.model[childProp], child.model);
 
       // Add to the model children
-      this.model.children.splice(index, 0, child.model);
+      this.model[childProp].splice(index, 0, child.model);
 
       // Add to the node children
       this.children.splice(index, 0, child);
     } else {
       if (insertIndex === undefined) {
-        this.model.children.push(child.model);
+        this.model[childProp].push(child.model);
         this.children.push(child);
       } else {
         if (insertIndex < 0 || insertIndex > this.children.length) {
           throw new Error('Invalid index.');
         }
-        this.model.children.splice(insertIndex, 0, child.model);
+        this.model[childProp].splice(insertIndex, 0, child.model);
         this.children.splice(insertIndex, 0, child);
       }
     }
@@ -89,9 +94,9 @@ export class Node {
   }
 
   /**
-   * @param {Node<NG>} child
+   * @param {Node<TN, Key>} child
    * @param {number} index
-   * @returns {Node<NG>}
+   * @returns {Node<TN, Key>}
    */
   addChildAtIndex(child, index) {
     if (this.hasComparatorFunction()) {
@@ -125,11 +130,12 @@ export class Node {
       var oldIndex = this.parent.children.indexOf(this);
       this.parent.children.splice(index, 0, this.parent.children.splice(oldIndex, 1)[0]);
 
-      if (this.parent.model && this.parent.model.children) {
-        this.parent.model.children.splice(
+      const childProp = this.config.childrenPropertyName;
+      if (this.parent.model && this.parent.model[childProp]) {
+        this.parent.model[childProp].splice(
           index,
           0,
-          this.parent.model.children.splice(oldIndex, 1)[0]
+          this.parent.model[childProp].splice(oldIndex, 1)[0]
         );
       }
     }
@@ -137,6 +143,9 @@ export class Node {
     return this;
   }
 
+  /**
+   * @returns {Node<TN, Key>[]}
+   */
   getPath() {
     var path = [];
     (function addToPath(node) {
@@ -159,45 +168,48 @@ export class Node {
   }
 
   /**
-   * @param {import('../types/main').Callback<NG>} callback
-   * @param {Partial<import('../types/main').walkOptions<NG>>} options
+   * @param {import('../types/main').Callback<TN, Key>} callback
+   * @param {Partial<import('../types/main').walkOptions<TN, Key>>} options
    */
   walk(callback, { strategy = 'pre' } = {}) {
     verifyStrategy(strategy);
 
-    /** @type {import('../types/main').Strategy<NG>} */
-    const strat = (walkStrategies[strategy]);
-    strat(callback, this);
-
-    // walkStrategies[strategy](callback, this);
+    /** @type {import('../types/main').Strategy<TN, Key>} */
+    const strategyFn = walkStrategies[strategy];
+    strategyFn(callback, this);
   }
 
   /**
-   * @param {import('../types/main').Callback<NG>} predicate
-   * @param {Partial<import('../types/main').walkOptions<NG>>} options
-   * @returns {Node<NG>[]}
+   * @param {import('../types/main').Callback<TN, Key>} predicate
+   * @param {Partial<import('../types/main').walkOptions<TN, Key>>} options
+   * @returns {Node<TN, Key>[]}
    */
   all(predicate = () => true, { strategy = 'pre' } = {}) {
     verifyStrategy(strategy);
-    /** @type {Node<NG>[]} */
+    /** @type {Node<TN, Key>[]} */
     const allNodes = [];
-    /** @type {import('../types/main').Strategy<NG>} */
-    const strat = (walkStrategies[strategy]);
-    strat(predicate, this);
+    /** @type {import('../types/main').Strategy<TN, Key>} */
+    const strategyFn = walkStrategies[strategy];
+    strategyFn((node) => {
+      if (predicate(node)) {
+        allNodes.push(node);
+      }
+      return true;
+    }, this);
     return allNodes;
   }
 
   /**
-   * @param {import('../types/main').Callback<NG>} predicate
-   * @param {Partial<import('../types/main').walkOptions<NG>>} options
-   * @returns {Node<NG> | undefined}
+   * @param {import('../types/main').Callback<TN, Key>} predicate
+   * @param {Partial<import('../types/main').walkOptions<TN, Key>>} options
+   * @returns {Node<TN, Key> | undefined}
    */
   first(predicate = () => true, { strategy = 'pre' } = {}) {
     verifyStrategy(strategy);
     let firstNode;
-    /** @type {import('../types/main').Strategy<NG>} */
-    const strat = (walkStrategies[strategy]);
-    strat((node) => {
+    /** @type {import('../types/main').Strategy<TN, Key>} */
+    const strategyFn = walkStrategies[strategy];
+    strategyFn((node) => {
       if (predicate(node)) {
         firstNode = node;
         return false;
@@ -207,13 +219,16 @@ export class Node {
     return firstNode;
   }
 
+  /**
+   * @returns {Node<TN, Key>}
+   */
   drop() {
-    var indexOfChild;
     if (!this.isRoot() && this.parent) {
-      indexOfChild = this.parent.children.indexOf(this);
+      const indexOfChild = this.parent.children.indexOf(this);
       this.parent.children.splice(indexOfChild, 1);
-      if (this.parent.model && this.parent.model.children) {
-        this.parent.model.children.splice(indexOfChild, 1);
+      const childProp = this.config.childrenPropertyName;
+      if (this.parent.model && this.parent.model[childProp]) {
+        this.parent.model[childProp].splice(indexOfChild, 1);
       }
       this.parent = undefined;
       delete this.parent;
@@ -221,6 +236,9 @@ export class Node {
     return this;
   }
 
+  /**
+   * @returns {boolean}
+   */
   hasComparatorFunction() {
     return typeof this.config.modelComparatorFn === 'function';
   }
