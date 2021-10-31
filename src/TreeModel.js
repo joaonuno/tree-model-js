@@ -2,7 +2,7 @@ import { Node } from './Node.js';
 
 /**
  * @template {Record<string, unknown>} T
- * @template {string} [Key='children']
+ * @template {string | keyof T} [Key='children']
  * @param {Node<T, Key>} node
  * @param {Node<T, Key>} child
  * @returns {Node<T, Key>}
@@ -15,7 +15,7 @@ function addChildToNode(node, child) {
 
 /**
  * @template {Record<string, unknown>} TM
- * @template {string} [Key='children']
+ * @template {string | keyof TM} [Key='children']
  */
 export class TreeModel {
   /** @type {import('../types/main').Config<TM, Key>} */
@@ -40,19 +40,19 @@ export class TreeModel {
     if (!(model instanceof Object)) {
       throw new TypeError('Model must be of type object.');
     }
-    const childProp = this.config.childrenPropertyName;
+    const children = model[this.config.childrenPropertyName];
 
     node = new Node(this.config, model);
-    if (model[childProp] instanceof Array) {
+    if (children instanceof Array) {
       if (this.config.modelComparatorFn) {
-        model[childProp].sort(this.config.modelComparatorFn);
+        children.sort(this.config.modelComparatorFn);
       }
       for (
-        i = 0, childCount = model[childProp].length;
+        i = 0, childCount = children.length;
         i < childCount;
         i++
       ) {
-        addChildToNode(node, this.parse(model[childProp][i]));
+        addChildToNode(node, this.parse(children[i]));
       }
     }
     return node;

@@ -45,7 +45,7 @@
     "sinon": "^5",
     "typescript": "^4.5.0-beta"
   },
-  "types": "types",
+  "types": "dist-types/index.d.ts",
   "prettier": {
     "singleQuote": true,
     "printWidth": 100

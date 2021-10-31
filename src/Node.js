@@ -2,7 +2,7 @@ import { findInsertIndex } from './findInsertIndex.js';
 import { walkStrategies } from './walkStrategies.js';
 
 /**
- * @param {keyof walkStrategies} strategy
+ * @param {string | keyof walkStrategies} strategy
  */
 function verifyStrategy(strategy) {
   if (!walkStrategies[strategy]) {
@@ -15,7 +15,7 @@ function verifyStrategy(strategy) {
 }
 /**
  * @template {Record<string, unknown>} TN
- * @template {string} [Key='children']
+ * @template {string | keyof TN} [Key='children']
  */
 export class Node {
   /** @type {Node<TN, Key> | undefined} */
@@ -34,6 +34,7 @@ export class Node {
   constructor(config, model) {
     this.config = config;
     this.model = model;
+    const childProp = this.config.childrenPropertyName;
   }
 
   /**
@@ -53,7 +54,7 @@ export class Node {
   /**
    * @param {Node<TN, Key>} child
    * @param {number} [insertIndex]
-   * @returns
+   * @returns {Node<TN, Key>}
    */
   addChild(child, insertIndex) {
     var index;
@@ -66,27 +67,29 @@ export class Node {
 
     child.parent = this;
     if (!(this.model[childProp] instanceof Array)) {
+      // @ts-ignore
       this.model[childProp] = [];
     }
 
     if (typeof this.config.modelComparatorFn === 'function') {
       // Find the index to insert the child
+      // @ts-ignore
       index = findInsertIndex(this.config.modelComparatorFn, this.model[childProp], child.model);
 
       // Add to the model children
-      this.model[childProp].splice(index, 0, child.model);
+      this.model[childProp]?.splice(index, 0, child.model);
 
       // Add to the node children
       this.children.splice(index, 0, child);
     } else {
       if (insertIndex === undefined) {
-        this.model[childProp].push(child.model);
+        this.model[childProp]?.push(child.model);
         this.children.push(child);
       } else {
         if (insertIndex < 0 || insertIndex > this.children.length) {
           throw new Error('Invalid index.');
         }
-        this.model[childProp].splice(insertIndex, 0, child.model);
+        this.model[childProp]?.splice(insertIndex, 0, child.model);
         this.children.splice(insertIndex, 0, child);
       }
     }
@@ -122,6 +125,7 @@ export class Node {
       throw new Error('Invalid index.');
     }
 
+    // @ts-ignore
     if (index < 0 || index >= this.parent.children.length) {
       throw new Error('Invalid index.');
     }
@@ -132,9 +136,10 @@ export class Node {
 
       const childProp = this.config.childrenPropertyName;
       if (this.parent.model && this.parent.model[childProp]) {
-        this.parent.model[childProp].splice(
+        this.parent.model[childProp]?.splice(
           index,
           0,
+          // @ts-ignore
           this.parent.model[childProp].splice(oldIndex, 1)[0]
         );
       }
@@ -151,6 +156,7 @@ export class Node {
     (function addToPath(node) {
       path.unshift(node);
       if (!node.isRoot()) {
+        // @ts-ignore
         addToPath(node.parent);
       }
     })(this);
@@ -174,8 +180,10 @@ export class Node {
   walk(callback, { strategy = 'pre' } = {}) {
     verifyStrategy(strategy);
 
-    /** @type {import('../types/main').Strategy<TN, Key>} */
-    const strategyFn = walkStrategies[strategy];
+    // TODO: find out why TS does not infer this automatically (Key !== Key)
+    const strategyFn = /** @type {import('../types/main').Strategy<TN, Key>} */ (
+      /** @type {unknown} */ (walkStrategies[strategy])
+    );
     strategyFn(callback, this);
   }
 
@@ -188,8 +196,9 @@ export class Node {
     verifyStrategy(strategy);
     /** @type {Node<TN, Key>[]} */
     const allNodes = [];
-    /** @type {import('../types/main').Strategy<TN, Key>} */
-    const strategyFn = walkStrategies[strategy];
+    const strategyFn = /** @type {import('../types/main').Strategy<TN, Key>} */ (
+      /** @type {unknown} */ (walkStrategies[strategy])
+    );
     strategyFn((node) => {
       if (predicate(node)) {
         allNodes.push(node);
@@ -207,8 +216,9 @@ export class Node {
   first(predicate = () => true, { strategy = 'pre' } = {}) {
     verifyStrategy(strategy);
     let firstNode;
-    /** @type {import('../types/main').Strategy<TN, Key>} */
-    const strategyFn = walkStrategies[strategy];
+    const strategyFn = /** @type {import('../types/main').Strategy<TN, Key>} */ (
+      /** @type {unknown} */ (walkStrategies[strategy])
+    );
     strategyFn((node) => {
       if (predicate(node)) {
         firstNode = node;
@@ -228,7 +238,7 @@ export class Node {
       this.parent.children.splice(indexOfChild, 1);
       const childProp = this.config.childrenPropertyName;
       if (this.parent.model && this.parent.model[childProp]) {
-        this.parent.model[childProp].splice(indexOfChild, 1);
+        this.parent.model[childProp]?.splice(indexOfChild, 1);
       }
       this.parent = undefined;
       delete this.parent;

@@ -1,6 +1,6 @@
 /**
  * @template {Record<string, unknown>} T
- * @template {string} [Key='children']
+ * @template {string | keyof T} [Key='children']
  * @param {import('../types/main').Callback<T, Key>} callback
  * @param {import('./Node.js').Node<T, Key>} model
  * @returns {boolean}
@@ -19,7 +19,7 @@ function pre(callback, model) {
 
 /**
  * @template {Record<string, unknown>} T
- * @template {string} [Key='children']
+ * @template {string | keyof T} [Key='children']
  * @param {import('../types/main').Callback<T, Key>} callback
  * @param {import('./Node.js').Node<T, Key>} model
  * @returns {boolean}
@@ -38,7 +38,7 @@ function post(callback, model) {
 
 /**
  * @template {Record<string, unknown>} T
- * @template {string} [Key='children']
+ * @template {string | keyof T} [Key='children']
  * @param {import('../types/main').Callback<T, Key>} callback
  * @param {import('./Node.js').Node<T, Key>} model
  */
@@ -63,7 +63,7 @@ function breadth(callback, model) {
 
 /**
  * @template {Record<string, unknown>} T
- * @template {string} [Key='children']
+ * @template {string | keyof T} [Key='children']
  * @type {import('../types/main').walkStrategies<T, Key>} */
 export const walkStrategies = {
   pre,

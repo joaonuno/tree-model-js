@@ -5,15 +5,13 @@
 
 import chai from 'chai';
 import sinon from 'sinon';
-import { TreeModel } from '../src/index.js';
+import { TreeModel } from '../index.js';
 
 const { assert } = chai;
 
 chai.config.includeStack = true;
 
 describe('TreeModel', function () {
-  'use strict';
-
   /**
    * @param {number} id
    * @returns {(node: IdNode) => boolean}
@@ -26,9 +24,9 @@ describe('TreeModel', function () {
    * @param {number} id
    * @returns {(node: IdNodeDeps) => boolean}
    */
-   function idDepsEq(id) {
+  function idDepsEq(id) {
     return (node) => node.model.id === id;
-  }  
+  }
 
   describe('with default configuration', function () {
     /** @type {TreeModel<{id: number}>} */
@@ -844,6 +842,7 @@ describe('TreeModel', function () {
       let root;
 
       beforeEach(function () {
+        // @ts-ignore
         root = treeModel.parse({
           id: 1,
           deps: [
@@ -878,6 +877,7 @@ describe('TreeModel', function () {
       let root;
 
       beforeEach(function () {
+        // @ts-ignore
         root = treeModel.parse({
           id: 1,
           deps: [

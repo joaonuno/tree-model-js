@@ -14,7 +14,7 @@
     "src",
     "test",
     "types"
-  ],
+, "index.js"  ],
   "exclude": [
     "dist",
     "dist-types"
