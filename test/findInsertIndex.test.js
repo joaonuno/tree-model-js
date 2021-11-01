@@ -11,13 +11,16 @@ describe('findInsertIndex', function () {
   'use strict';
 
   it('should get the index to insert the element in the array according to the comparator', function () {
-    var targetArray, comparatorFn;
-
-    comparatorFn = function (a, b) {
+    /**
+     * @param {{ id: number}} a
+     * @param {{ id: number}} b
+     * @returns
+     */
+    const comparatorFn = function (a, b) {
       return a.id - b.id;
     };
 
-    targetArray = [
+    const targetArray = [
       { id: 0 },
       { id: 1 },
       { id: 2 },

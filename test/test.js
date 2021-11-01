@@ -1,24 +1,36 @@
 /* global describe, it, beforeEach */
 
+/** @typedef {import('./test-types').IdNode} IdNode */
+/** @typedef {import('./test-types').IdNodeDeps} IdNodeDeps */
+
 import chai from 'chai';
 import sinon from 'sinon';
-import { TreeModel } from '../src/index.js';
+import { TreeModel } from '../index.js';
 
 const { assert } = chai;
 
 chai.config.includeStack = true;
 
 describe('TreeModel', function () {
-  'use strict';
-
+  /**
+   * @param {number} id
+   * @returns {(node: IdNode) => boolean}
+   */
   function idEq(id) {
-    return function (node) {
-      return node.model.id === id;
-    };
+    return (node) => node.model.id === id;
+  }
+
+  /**
+   * @param {number} id
+   * @returns {(node: IdNodeDeps) => boolean}
+   */
+  function idDepsEq(id) {
+    return (node) => node.model.id === id;
   }
 
   describe('with default configuration', function () {
-    var treeModel;
+    /** @type {TreeModel<{id: number}>} */
+    let treeModel;
 
     beforeEach(function () {
       treeModel = new TreeModel();
@@ -26,33 +38,26 @@ describe('TreeModel', function () {
 
     describe('parse()', function () {
       it('should throw an error when model is a number (not an object)', function () {
-        assert.throws(
-          treeModel.parse.bind(treeModel, 1),
-          TypeError,
-          'Model must be of type object.'
-        );
+        // @ts-expect-error - testing if error is thrown with wrong type
+        assert.throws(() => treeModel.parse(1), TypeError, 'Model must be of type object.');
       });
 
       it('should throw an error when model is a string (not an object)', function () {
-        assert.throws(
-          treeModel.parse.bind(treeModel, 'string'),
-          TypeError,
-          'Model must be of type object.'
-        );
+        // @ts-expect-error - testing if error is thrown with wrong type
+        assert.throws(() => treeModel.parse('string'), TypeError, 'Model must be of type object.');
       });
 
       it('should throw an error when some child in the model is not an object', function () {
         assert.throws(
-          treeModel.parse.bind(treeModel, { children: ['string'] }),
+          // @ts-expect-error - testing if error is thrown with wrong type
+          () => treeModel.parse({ children: ['string'] }),
           TypeError,
           'Model must be of type object.'
         );
       });
 
       it('should create a root node when given a model without children', function () {
-        var root;
-
-        root = treeModel.parse({ id: 1 });
+        const root = treeModel.parse({ id: 1 });
 
         assert.isUndefined(root.parent);
         assert.isArray(root.children);
@@ -147,6 +152,7 @@ describe('TreeModel', function () {
     });
 
     describe('addChild()', function () {
+      /** @type {IdNode} */
       var root;
 
       beforeEach(function () {
@@ -161,7 +167,9 @@ describe('TreeModel', function () {
 
       it('should throw an error when child is not a Node', function () {
         assert.throws(
-          root.addChild.bind(root, { children: [] }),
+          // @ts-expect-error - testing if error is thrown with wrong type
+
+          () => root.addChild({ children: [] }),
           TypeError,
           'Child must be of type Node.'
         );
@@ -180,8 +188,10 @@ describe('TreeModel', function () {
 
       it('should add child at index 0 of a leaf', function () {
         var leaf = root.first(idEq(11));
-        leaf.addChildAtIndex(treeModel.parse({ id: 111 }), 0);
-        assert.deepEqual(leaf.model.children, [{ id: 111 }]);
+        if (leaf) {
+          leaf.addChildAtIndex(treeModel.parse({ id: 111 }), 0);
+          assert.deepEqual(leaf.model.children, [{ id: 111 }]);
+        }
       });
 
       it('should throw an error when adding child at negative index', function () {
@@ -200,6 +210,7 @@ describe('TreeModel', function () {
     });
 
     describe('setIndex()', function () {
+      /** @type {IdNode} */
       var root;
 
       beforeEach(function () {
@@ -215,7 +226,10 @@ describe('TreeModel', function () {
         for (i = 0; i < root.children.length; i++) {
           child.setIndex(i);
           assert.equal(child.getIndex(), i);
-          assert.equal(root.model[child.config.childrenPropertyName].indexOf(child.model), i);
+          // assert.equal(root.model[child.config.childrenPropertyName].indexOf(child.model), i);
+          if (root.model.children) {
+            assert.equal(root.model.children.indexOf(child.model), i);
+          }
         }
       });
 
@@ -285,6 +299,7 @@ describe('TreeModel', function () {
     });
 
     describe('getPath()', function () {
+      /** @type {IdNode} */
       var root;
 
       beforeEach(function () {
@@ -304,15 +319,13 @@ describe('TreeModel', function () {
       });
 
       it('should get an array with the root node if called on the root node', function () {
-        var pathToRoot;
-        pathToRoot = root.getPath();
+        const pathToRoot = root.getPath();
         assert.lengthOf(pathToRoot, 1);
         assert.strictEqual(pathToRoot[0].model.id, 1);
       });
 
       it('should get an array of nodes from the root to the node (included)', function () {
-        var pathToNode121;
-        pathToNode121 = root.first(idEq(121)).getPath();
+        const pathToNode121 = /** @type {IdNode} */ (root.first(idEq(121))).getPath();
         assert.lengthOf(pathToNode121, 3);
         assert.strictEqual(pathToNode121[0].model.id, 1);
         assert.strictEqual(pathToNode121[1].model.id, 12);
@@ -321,18 +334,33 @@ describe('TreeModel', function () {
     });
 
     describe('traversal', function () {
-      var root, spy121, spy12;
+      /** @type {IdNode} */
+      let root;
+      /** @type {sinon.SinonSpy} */
+      let spy121;
+      /** @type {sinon.SinonSpy} */
+      let spy12;
 
+      /**
+       * @param {IdNode} node
+       * @returns {boolean}
+       */
       function callback121(node) {
         if (node.model.id === 121) {
           return false;
         }
+        return true;
       }
 
+      /**
+       * @param {IdNode} node
+       * @returns {boolean}
+       */
       function callback12(node) {
         if (node.model.id === 12) {
           return false;
         }
+        return true;
       }
 
       beforeEach(function () {
@@ -356,9 +384,9 @@ describe('TreeModel', function () {
 
       describe('walk depthFirstPreOrder by default', function () {
         it('should traverse the nodes until the callback returns false', function () {
-          root.walk(spy121, this);
+          root.walk(spy121);
           assert.strictEqual(spy121.callCount, 5);
-          assert(spy121.alwaysCalledOn(this));
+          //assert(spy121.alwaysCalledOn(this));
           assert(spy121.getCall(0).calledWithExactly(root.first(idEq(1))));
           assert(spy121.getCall(1).calledWithExactly(root.first(idEq(11))));
           assert(spy121.getCall(2).calledWithExactly(root.first(idEq(111))));
@@ -369,9 +397,9 @@ describe('TreeModel', function () {
 
       describe('walk depthFirstPostOrder', function () {
         it('should traverse the nodes until the callback returns false', function () {
-          root.walk({ strategy: 'post' }, spy121, this);
+          root.walk(spy121, { strategy: 'post' });
           assert.strictEqual(spy121.callCount, 3);
-          assert(spy121.alwaysCalledOn(this));
+          // assert(spy121.alwaysCalledOn(this));
           assert(spy121.getCall(0).calledWithExactly(root.first(idEq(111))));
           assert(spy121.getCall(1).calledWithExactly(root.first(idEq(11))));
           assert(spy121.getCall(2).calledWithExactly(root.first(idEq(121))));
@@ -380,9 +408,9 @@ describe('TreeModel', function () {
 
       describe('walk depthFirstPostOrder (2)', function () {
         it('should traverse the nodes until the callback returns false', function () {
-          root.walk({ strategy: 'post' }, spy12, this);
+          root.walk(spy12, { strategy: 'post' });
           assert.strictEqual(spy12.callCount, 5);
-          assert(spy12.alwaysCalledOn(this));
+          // assert(spy12.alwaysCalledOn(this));
           assert(spy12.getCall(0).calledWithExactly(root.first(idEq(111))));
           assert(spy12.getCall(1).calledWithExactly(root.first(idEq(11))));
           assert(spy12.getCall(2).calledWithExactly(root.first(idEq(121))));
@@ -393,9 +421,9 @@ describe('TreeModel', function () {
 
       describe('walk breadthFirst', function () {
         it('should traverse the nodes until the callback returns false', function () {
-          root.walk({ strategy: 'breadth' }, spy121, this);
+          root.walk(spy121, { strategy: 'breadth' });
           assert.strictEqual(spy121.callCount, 5);
-          assert(spy121.alwaysCalledOn(this));
+          // assert(spy121.alwaysCalledOn(this));
           assert(spy121.getCall(0).calledWithExactly(root.first(idEq(1))));
           assert(spy121.getCall(1).calledWithExactly(root.first(idEq(11))));
           assert(spy121.getCall(2).calledWithExactly(root.first(idEq(12))));
@@ -407,15 +435,16 @@ describe('TreeModel', function () {
       describe('walk using unknown strategy', function () {
         it('should throw an error warning about the strategy', function () {
           assert.throws(
-            root.walk.bind(root, { strategy: 'unknownStrategy' }, callback121, this),
+            () => root.walk(callback121, { strategy: 'unknownStrategy' }),
             Error,
-            'Unknown tree walk strategy. Valid strategies are \'pre\' [default], \'post\' and \'breadth\'.'
+            "\"unknownStrategy\" is an unknown tree walk strategy. Valid strategies are 'pre' [default], 'post' and 'breadth'."
           );
         });
       });
     });
 
     describe('all()', function () {
+      /** @type {IdNode} */
       var root;
 
       beforeEach(function () {
@@ -478,6 +507,7 @@ describe('TreeModel', function () {
     });
 
     describe('first()', function () {
+      /** @type {IdNode} */
       var root;
 
       beforeEach(function () {
@@ -497,35 +527,28 @@ describe('TreeModel', function () {
       });
 
       it('should get the first node when the predicate returns true', function () {
-        var first;
-        first = root.first(function () {
-          return true;
-        });
+        const first = /** @type {IdNode} */ (root.first(() => true));
         assert.equal(first.model.id, 1);
       });
 
       it('should get the first node when no predicate is given', function () {
-        var first;
-        first = root.first();
+        const first = /** @type {IdNode} */ (root.first());
         assert.equal(first.model.id, 1);
       });
 
       it('should get the first node with a different strategy when the predicate returns true', function () {
-        var first;
-        first = root.first({ strategy: 'post' }, function () {
-          return true;
-        });
+        const first = /** @type {IdNode} */ (root.first(() => true, { strategy: 'post' }));
         assert.equal(first.model.id, 111);
       });
 
       it('should get the first node with a different strategy when no predicate is given', function () {
-        var first;
-        first = root.first({ strategy: 'post' });
+        const first = /** @type {IdNode} */ (root.first(() => true, { strategy: 'post' }));
         assert.equal(first.model.id, 111);
       });
     });
 
     describe('drop()', function () {
+      /** @type {IdNode} */
       var root;
 
       beforeEach(function () {
@@ -549,7 +572,8 @@ describe('TreeModel', function () {
       });
 
       it('should give back the dropped node, which no longer be found in the original root', function () {
-        assert.deepEqual(root.first(idEq(11)).drop().model, {
+        const first = /** @type {IdNode} */ (root.first(idEq(11)));
+        assert.deepEqual(first.drop().model, {
           id: 11,
           children: [{ id: 111 }],
         });
@@ -558,6 +582,7 @@ describe('TreeModel', function () {
     });
 
     describe('hasChildren()', function () {
+      /** @type {IdNode} */
       var root;
 
       beforeEach(function () {
@@ -581,13 +606,15 @@ describe('TreeModel', function () {
       });
 
       it('should return false for node without children', function () {
-        assert.equal(root.first(idEq(111)).hasChildren(), false);
+        const first = /** @type {IdNode} */ (root.first(idEq(111)));
+        assert.equal(first.hasChildren(), false);
       });
     });
   });
 
   describe('with custom children and comparator', function () {
-    var treeModel;
+    /** @type {TreeModel<{id: number}, 'deps'>} */
+    let treeModel;
 
     beforeEach(function () {
       treeModel = new TreeModel({
@@ -600,9 +627,12 @@ describe('TreeModel', function () {
 
     describe('parse()', function () {
       it('should create a root and stable sort the respective children according to the comparator', function () {
-        var root, node12, i;
-
-        root = treeModel.parse({
+        /** @type {TreeModel<{id: number, stable?: number}, 'deps'>} */
+        const treeModelStable = new TreeModel({
+          childrenPropertyName: 'deps',
+          modelComparatorFn: (a, b) => b.id - a.id,
+        });
+        const root = treeModelStable.parse({
           id: 1,
           deps: [
             {
@@ -672,7 +702,7 @@ describe('TreeModel', function () {
         assert.deepEqual(root, root.children[0].parent);
         assert.deepEqual(root, root.children[1].parent);
 
-        node12 = root.children[0];
+        const node12 = root.children[0];
         assert.isArray(node12.children);
         assert.lengthOf(node12.children, 17);
         assert.deepEqual(node12.model, {
@@ -698,7 +728,7 @@ describe('TreeModel', function () {
           ],
         });
 
-        for (i = 0; i < 17; i++) {
+        for (let i = 0; i < 17; i++) {
           assert.deepEqual(node12, node12.children[i].parent);
         }
       });
@@ -706,8 +736,13 @@ describe('TreeModel', function () {
 
     describe('addChild()', function () {
       it('should add child respecting the given comparator', function () {
-        var root;
-        root = treeModel.parse({
+        /** @type {TreeModel<{id: number, stable?: number}, 'deps'>} */
+        const treeModelStable = new TreeModel({
+          childrenPropertyName: 'deps',
+          modelComparatorFn: (a, b) => b.id - a.id,
+        });
+
+        const root = treeModelStable.parse({
           id: 1,
           deps: [
             { id: 12, stable: 1 },
@@ -731,10 +766,10 @@ describe('TreeModel', function () {
             { id: 12, stable: 3 },
           ],
         });
-        root.addChild(treeModel.parse({ id: 13, stable: 2 }));
-        root.addChild(treeModel.parse({ id: 10, stable: 1 }));
-        root.addChild(treeModel.parse({ id: 10, stable: 2 }));
-        root.addChild(treeModel.parse({ id: 12, stable: 4 }));
+        root.addChild(treeModelStable.parse({ id: 13, stable: 2 }));
+        root.addChild(treeModelStable.parse({ id: 10, stable: 1 }));
+        root.addChild(treeModelStable.parse({ id: 10, stable: 2 }));
+        root.addChild(treeModelStable.parse({ id: 12, stable: 4 }));
         assert.lengthOf(root.children, 23);
         assert.deepEqual(root.model.deps, [
           { id: 13, stable: 1 },
@@ -764,8 +799,7 @@ describe('TreeModel', function () {
       });
 
       it('should keep child nodes and model child nodes positions in sync', function () {
-        var root;
-        root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
+        const root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
         root.addChild(treeModel.parse({ id: 13 }));
         root.addChild(treeModel.parse({ id: 10 }));
         assert.lengthOf(root.children, 4);
@@ -778,10 +812,8 @@ describe('TreeModel', function () {
       });
 
       it('should throw an error when adding child at index but a comparator was provided', function () {
-        var root, child;
-
-        root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
-        child = treeModel.parse({ id: 13 });
+        const root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
+        const child = treeModel.parse({ id: 13 });
         assert.throws(
           root.addChildAtIndex.bind(root, child, 1),
           Error,
@@ -792,10 +824,8 @@ describe('TreeModel', function () {
 
     describe('setIndex()', function () {
       it('should throw an error when setting a node index but a comparator was provided', function () {
-        var root, child;
-
-        root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
-        child = root.children[0];
+        const root = treeModel.parse({ id: 1, deps: [{ id: 12 }, { id: 11 }] });
+        const child = root.children[0];
 
         assert.throws(
           function () {
@@ -808,9 +838,11 @@ describe('TreeModel', function () {
     });
 
     describe('drop()', function () {
-      var root;
+      /** @type {IdNodeDeps} */
+      let root;
 
       beforeEach(function () {
+        // @ts-ignore
         root = treeModel.parse({
           id: 1,
           deps: [
@@ -831,18 +863,21 @@ describe('TreeModel', function () {
       });
 
       it('should give back the dropped node, which no longer be found in the original root', function () {
-        assert.deepEqual(root.first(idEq(11)).drop().model, {
+        const first = /** @type {IdNodeDeps} */ (root.first(idDepsEq(11)));
+        assert.deepEqual(first.drop().model, {
           id: 11,
           deps: [{ id: 111 }],
         });
-        assert.isUndefined(root.first(idEq(11)));
+        assert.isUndefined(root.first(idDepsEq(11)));
       });
     });
 
     describe('hasChildren()', function () {
-      var root;
+      /** @type {IdNodeDeps} */
+      let root;
 
       beforeEach(function () {
+        // @ts-ignore
         root = treeModel.parse({
           id: 1,
           deps: [
@@ -863,7 +898,8 @@ describe('TreeModel', function () {
       });
 
       it('should return false for node without children', function () {
-        assert.equal(root.first(idEq(111)).hasChildren(), false);
+        const first = /** @type {IdNodeDeps} */ (root.first(idDepsEq(111)));
+        assert.equal(first.hasChildren(), false);
       });
     });
   });
