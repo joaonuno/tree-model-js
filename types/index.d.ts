@@ -14,8 +14,8 @@ declare class TreeModel {
 
 declare namespace TreeModel {
     class Node<T> {
-        constructor(config: any, public model: Model<T>) {}
-
+        constructor(config: any, model: Model<T>);
+        model: Model<T>;
         isRoot(): boolean;
         hasChildren(): boolean;
         addChild(child: Node<T>): Node<T>;
