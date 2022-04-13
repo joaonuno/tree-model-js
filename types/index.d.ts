@@ -17,7 +17,7 @@ declare namespace TreeModel {
         constructor(config: any, model: T);
         model: T;
         children: Node<T>[];
-        parent: Node<T>;
+        parent: Node<T> | undefined;
         isRoot(): boolean;
         hasChildren(): boolean;
         addChild(child: Node<T>): Node<T>;
