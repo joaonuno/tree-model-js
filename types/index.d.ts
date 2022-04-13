@@ -9,13 +9,14 @@ declare class TreeModel<Config extends TreeModel.Config = TreeModel.Config> {
 
     private config: Config;
 
-    parse<T>(model: T & {[Key in Config['childrenPropertyName'] extends string ? Config['childrenPropertyName'] : 'children']: T[] }): TreeModel.Node<T & {[Key in Config['childrenPropertyName'] extends string ? Config['childrenPropertyName'] : 'children']: T[] }>;
+    parse<T extends {[Key in Config['childrenPropertyName'] extends string ? Config['childrenPropertyName'] : 'children']: T[] }>(model: T): TreeModel.Node<T>;
 }
 
 declare namespace TreeModel {
     class Node<T> {
         constructor(config: any, model: T);
         model: T;
+        children: Node<T>[];
         isRoot(): boolean;
         hasChildren(): boolean;
         addChild(child: Node<T>): Node<T>;
