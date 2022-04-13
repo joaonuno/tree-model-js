@@ -4,7 +4,7 @@
 
 export = TreeModel;
 
-declare class TreeModel<T, Config extends TreeModel.Config = TreeModel.Config> {
+declare class TreeModel<Config extends TreeModel.Config = TreeModel.Config> {
     constructor(config?: Config);
 
     private config: Config;
