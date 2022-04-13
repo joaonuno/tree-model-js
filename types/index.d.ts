@@ -4,18 +4,18 @@
 
 export = TreeModel;
 
-declare class TreeModel {
-    constructor(config?: TreeModel.Config);
+declare class TreeModel<T, Config extends TreeModel.Config = TreeModel.Config> {
+    constructor(config?: Config);
 
-    private config: TreeModel.Config;
+    private config: Config;
 
-    parse<T>(model: TreeModel.Model<T>): TreeModel.Node<T>;
+    parse<T>(model: T & {[Key in Config['childrenPropertyName'] extends string ? Config['childrenPropertyName'] : 'children']: T[] }): TreeModel.Node<T & {[Key in Config['childrenPropertyName'] extends string ? Config['childrenPropertyName'] : 'children']: T[] }>;
 }
 
 declare namespace TreeModel {
     class Node<T> {
-        constructor(config: any, model: Model<T>);
-        model: Model<T>;
+        constructor(config: any, model: T);
+        model: T;
         isRoot(): boolean;
         hasChildren(): boolean;
         addChild(child: Node<T>): Node<T>;
@@ -44,7 +44,6 @@ declare namespace TreeModel {
          */
         childrenPropertyName?: string;
         modelComparatorFn?: ComparatorFunction;
-        [propName: string]: any;
     }
 
     interface Options {
@@ -55,6 +54,4 @@ declare namespace TreeModel {
 
     type ComparatorFunction = (left: any, right: any) => boolean;
     type NodeVisitorFunction<T> = (visitingNode: Node<T>) => boolean;
-
-    type Model<T> = T & { children?: Array<Model<T>> };
 }
